@@ -1,0 +1,50 @@
+
+@import "../variables";
+@import "../mixins";
+@import "../_states";
+
+.form {
+  position: relative;
+  width: $mobile-width;
+  margin: 40px auto;
+  padding: 40px;
+  background: $white;
+  box-shadow: 0 2px 5px rgba(0,0,0,.05);
+
+  @include element("title") {
+    position: relative;
+    font-size: 48px;
+    text-align: center;
+    color: $black;
+    margin-bottom: 30px;
+  }
+
+  hr {
+    border: 1px solid $grey;
+    margin: 20px 0;
+  }
+
+  button {
+    margin-top: 15px;
+  }
+
+  p {
+    text-align: center;
+
+    a {
+      color: $blue;
+    }
+  }
+
+
+
+  @include modifier("loading") {
+    @extend .loading;
+  }
+
+  @include mobile {
+    width: 100%;
+    height: 100vh;
+    margin: 0;
+  }
+}

@@ -1,0 +1,37 @@
+
+@import "variables";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Roboto, sans-serif;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+html, body {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  overflow: auto;
+  background: $light-blue;
+}
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+  color: inherit;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+table {
+  position: relative;
+  width: 100%;
+  border-collapse: collapse;
+}
