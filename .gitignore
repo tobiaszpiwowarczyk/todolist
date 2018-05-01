@@ -28,3 +28,7 @@ src/main/webapp
 .vscode
 bin/
 out/
+
+#Frontend folder
+frontend/node_modules/
+frontend/.sass-cache
