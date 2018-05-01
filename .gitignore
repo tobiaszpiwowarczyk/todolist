@@ -26,3 +26,5 @@ nbdist/
 
 src/main/webapp
 .vscode
+bin/
+out/
