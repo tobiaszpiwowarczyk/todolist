@@ -1,0 +1,21 @@
+<div class="modal"
+     [ngClass]="{'modal--shown': shown}">
+
+  <div class="modal__box">
+    <div class="modal__header">
+      <div class="modal__header__title">{{title}}</div>
+      <div class="modal__header__close-btn" (click)="hide()">
+        <div class="fa fa-times"></div>
+      </div>
+    </div>
+    <div *ngIf="content != null" class="modal__content" [innerHtml]="content | safeStyle"></div>
+    <div *ngIf="content == null" class="modal__content">
+      <ng-content></ng-content>
+    </div>
+    <div class="modal__actions">
+      <app-button (click)="approve()" [fluid]="true">OK</app-button>
+      <app-button [primary]="false" [fluid]="true" (click)="deny()">Anuluj</app-button>
+    </div>
+  </div>
+
+</div>

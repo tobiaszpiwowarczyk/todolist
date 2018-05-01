@@ -1,0 +1,113 @@
+<app-header></app-header>
+
+
+<div *ngIf="status == 200">
+
+  <div class="container content__container">
+
+    <div class="todo-list-details">
+      <h2>{{content?.name}}</h2>
+      <div class="todo-list-details__data">
+        <div class="todo-list-details__data__item">
+          <div class="fa fa-fw fa-calendar-o"></div>
+          <span>{{content?.createdDate}}</span>
+        </div>
+        <div class="todo-list-details__data__item">
+          <div class="fa fa-fw fa-list-ul"></div>
+          <span>{{content?.todos.length}}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="content__container__form">
+      <form [formGroup]="addTodoForm" (ngSubmit)="addTodo()">
+        <app-input formControlName="content"></app-input>
+        <app-button type="submit" [loading]="!valid" [disabled]="!valid" [large]="true">Dodaj</app-button>
+      </form>
+    </div>
+
+    <h1 class="centered" *ngIf="content?.todos.length == 0">W tej chwili nie masz żadnych elementów</h1>
+
+    <div *ngIf="content?.todos.length > 0" class="content__container__list">
+
+      <todo *ngFor="let todo of content.todos"
+            [todo]="todo"
+            (onEdit)="openEditModal($event)"
+            (onInfo)="info($event)"
+            (onComplete)="completeTodo($event)"
+            (onDelete)="removeTodo($event)"></todo>
+    </div>
+
+
+    <modal title="Informacje" #infoModal>
+      <table>
+        <tr>
+            <td>Treść</td>
+            <td>{{editedTodo?.content}}</td>
+        </tr>
+        <tr>
+            <td>Data utworzenia</td>
+            <td>{{editedTodo?.createdDate}}</td>
+        </tr>
+        <tr>
+            <td>Priorytet</td>
+            <td>{{editedTodo?.priority?.label}}</td>
+        </tr>
+        <tr>
+            <td>Zakończono</td>
+            <td>{{editedTodo?.completed ? "Tak" : "Nie"}}</td>
+        </tr>
+      </table>
+    </modal>
+    <modal title="Edytuj obiekt" (onApprove)="saveTodo()" #editModal>
+      <form [formGroup]="editTodoForm">
+        <input type="hidden" formControlName="todoID" />
+        <table>
+          <tr>
+            <td>Treść</td>
+            <td>
+              <app-input formControlName="content"></app-input>
+            </td>
+          </tr>
+          <tr>
+            <td>Priorytet</td>
+            <td>
+              <app-dropdown formControlName="priority"
+                            [fluid]="true"
+                            [options]="priorities"></app-dropdown>
+            </td>
+          </tr>
+        </table>
+      </form>
+    </modal>
+  </div>
+
+  <div class="controls">
+    <a class="control control__prev" *ngIf="content?.prev != null" [routerLink]="['/todoList', content?.prev?.id]">
+      <div class="control__button">
+        <div class="fa fa-angle-left"></div>
+      </div>
+      <div class="control__label">
+        <span>{{content?.prev?.name}}</span>
+      </div>
+    </a>
+    <a class="control control__next" *ngIf="content?.next != null" [routerLink]="['/todoList', content?.next?.id]">
+      <div class="control__button">
+        <div class="fa fa-angle-right"></div>
+      </div>
+      <div class="control__label">
+        <span>{{content?.next?.name}}</span>
+      </div>
+    </a>
+  </div>
+
+  <app-alert #alert></app-alert>
+</div>
+
+
+
+<div *ngIf="status == 404" class="container content__container">
+  <h1>Błąd {{status}}</h1>
+  <p>{{content}}</p>
+  <a [routerLink]="['/home']">Strona główna</a>
+</div>

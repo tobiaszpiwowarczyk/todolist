@@ -1,0 +1,134 @@
+
+@import "../../../assets/variables";
+@import "../../../assets/mixins";
+
+// ----------------------------------------------
+
+$header-z-index: 9;
+$header-opener-padding: 20px;
+
+// ----------------------------------------------
+
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: $header-height;
+  background: $white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  z-index: 9;
+
+  .container {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+  }
+
+  @include element("brand") {
+    position: relative;
+    height: 100%;
+    background: $green;
+    color: $white;
+    padding: 0 20px;
+    font-size: 18px;
+    font-weight: 900;
+    line-height: $header-height;
+  }
+
+  @include element("menu") {
+    position: relative;
+    display: flex;
+    transition: transform .2s $bezier;
+
+    @include element("item") {
+      position: relative;
+      height: $header-height;
+      line-height: $header-height;
+      margin: 0 10px;
+      padding: 0 10px;
+
+      @include modifier("link") {
+        cursor: pointer;
+
+        &::after {
+          content: "";
+          display: block;
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          width: 0;
+          height: 5px;
+          background: $green;
+          transition: .2s $bezier;
+        }
+
+        &:hover::after {
+          width: 100%;
+          left: 0;
+        }
+      }
+    }
+
+    @include element("opener") {
+      position: relative;
+      width: $header-height;
+      height: $header-height;
+      padding: $header-opener-padding;
+      background: none;
+      border: none;
+      transform: rotate(0deg);
+      transition: .2s $bezier;
+      display: none;
+
+      span {
+        position: relative;
+        background: $black;
+        width: 100%;
+        height: #{$header-height / $header-opener-padding}px;
+        display: block;
+        margin: #{$header-height / $header-opener-padding}px 0;
+        border-radius: 3px;
+        transition: .2s $bezier;
+      }
+
+      &:focus {
+        transform: rotate(180deg);
+
+        span {
+          &:first-child {
+            transform: rotate(45deg);
+            top: #{($header-height / $header-opener-padding) * 2}px;
+          }
+          &:nth-child(2) {
+            opacity: 0;
+          }
+          &:last-child {
+            transform: rotate(-45deg);
+            top: #{($header-height / $header-opener-padding) * (-2)}px;
+          }
+        }
+
+        ~ .header__menu,
+        ~ .header__menu:hover{
+          transform: translateX(0);
+        }
+      }
+
+      @include mobile {
+        display: block;
+      }
+    }
+
+    @include mobile {
+      position: absolute;
+      right: 0;
+      top: 100%;
+      background: $white;
+      flex-direction: column;
+      height: calc(100vh - #{$header-height});
+      transform: translateX(100%);
+    }
+  }
+}

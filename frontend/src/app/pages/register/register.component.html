@@ -1,0 +1,56 @@
+<div class="register-form" [ngClass]="{'form--loading': !valid}">
+  <h1 class="form__title">Zarejestruj się</h1>
+
+  <form [formGroup]="registerForm" (ngSubmit)="register()">
+    
+    <div class="form__content">
+      <app-input formControlName="username"
+               icon="user"
+               [inputErrors]="{
+                 errors: registerForm.controls['username']?.errors,
+                 submitted: submitted
+               }"
+               label="Nazwa użytkownika..."></app-input>
+
+      <app-input formControlName="password"
+                inputType="password"
+                icon="lock"
+                [inputErrors]="{
+                  errors: registerForm.controls['password']?.errors,
+                  submitted: submitted
+                }"
+                label="Hasło..."></app-input>
+
+      <hr />
+
+      <app-input formControlName="firstName"
+                icon="pencil"
+                [inputErrors]="{
+                    errors: registerForm.controls['firstName']?.errors,
+                    submitted: submitted
+                  }"
+                label="Imię..."></app-input>
+
+      <app-input formControlName="lastName"
+                icon="pencil"
+                [inputErrors]="{
+                    errors: registerForm.controls['lastName']?.errors,
+                    submitted: submitted
+                  }"
+                label="Nazwisko..."></app-input>
+
+      <app-input formControlName="age"
+                icon="calendar-o"
+                [inputErrors]="{
+                    errors: registerForm.controls['age']?.errors,
+                    submitted: submitted
+                  }"
+                label="Wiek..."></app-input>
+    </div>
+
+    <app-button type="submit" [fluid]="true">Zarejestruj się</app-button>
+  </form>
+
+</div>
+
+<app-alert #alert></app-alert>

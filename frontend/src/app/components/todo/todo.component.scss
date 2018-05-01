@@ -1,0 +1,132 @@
+
+@import "../../../assets/variables";
+@import "../../../assets/mixins";
+@import "../../../assets/_states";
+
+// --------------------------------------------
+
+$todo-height: 60px;
+$todo-border-width: 2px;
+
+// --------------------------------------------
+
+
+.todo {
+  position: relative;
+  width: 100%;
+  height: $todo-height;
+  background: $white;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  overflow: hidden;
+
+  @include element("content") {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    line-height: $todo-height;
+    padding: 0 20px;
+    font-size: 21px;
+    white-space: nowrap;
+
+    &::after {
+      content: "";
+      display: block;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: $todo-height * 2;
+      background: linear-gradient(to right, transparent, $white);
+    }
+  }
+
+  @include element("options") {
+    position: relative;
+    height: 100%;
+    display: flex;
+  }
+
+  @include element("priority") {
+    position: relative;
+    padding: 0 20px;
+    line-height: $todo-height;
+    font-style: oblique;
+    font-weight: 900;
+    color: $white;
+
+    @include modifier("low") {
+      background: $green;
+    }
+    @include modifier("medium") {
+      background: $yellow;
+    }
+    @include modifier("high") {
+      background: $red;
+    }
+  }
+
+  @include element("buttons") {
+    position: relative;
+    width: $todo-height * 4;
+    display: flex;
+    align-items: stretch;
+  }
+
+  @include element("button") {
+    position: relative;
+    flex: 1 1 auto;
+    display: inline-block;
+    line-height: $todo-height;
+    text-align: center;
+    cursor: pointer;
+    font-size: $icon-font-size;
+
+    &:not(:last-child)::after {
+      content: "";
+      display: block;
+      position: absolute;
+      right: 0;
+      top: 25%;
+      width: $todo-border-width;
+      height: 50%;
+      background: $grey;
+    }
+
+    @include element(("edit", "info")) {
+      &:hover {
+        color: $blue;
+      }
+    }
+
+    @include element("complete") {
+      &:hover {
+        color: $green;
+      }
+    }
+
+    @include element("danger") {
+      &:hover {
+        color: $red;
+      }
+    }
+  }
+
+
+
+  @include modifier("loading") {
+    @extend .loading;
+  }
+
+
+  @include laptop {
+    flex-direction: column;
+    height: $todo-height * 2;
+
+    @include element("buttons") {
+      width: 100%;
+    }
+  }
+}

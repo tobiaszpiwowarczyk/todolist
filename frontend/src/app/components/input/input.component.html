@@ -1,0 +1,35 @@
+<div class="input"
+     [ngClass]="{
+      'input--iconized': icon != null,
+      'input--invalid': inputErrors?.errors && inputErrors.submitted,
+      'input--active': focused,
+      'input--no-border': noBorder
+     }">
+
+
+  <div *ngIf="icon != null" class="input__wrapper">
+    <div class="fa fa-{{icon}}"></div>
+    <input [placeholder]="label"
+           [type]="inputType"
+           (focus)="focus()"
+           (blur)="blur()"
+           [disabled]="disabled"
+           [ngModel]="value"
+           (ngModelChange)="change($event)"/>
+  </div>
+
+  <input *ngIf="icon == null"
+         [placeholder]="label"
+         [type]="inputType"
+         (focus)="focus()"
+         (blur)="blur()"
+         [disabled]="disabled"
+         [ngModel]="value"
+         (ngModelChange)="change($event)" />
+
+  <div class="input__validator" *ngIf="icon != null && inputErrors?.errors && inputErrors.submitted">
+    <div *ngIf="inputErrors?.errors['required']">To pole jest wymagane</div>
+    <div *ngIf="inputErrors?.errors['minlength']">Pole musi zawierać co najmniej {{inputErrors?.errors?.minlength.requiredLength}} znaków</div>
+    <div *ngIf="inputErrors?.errors['number']">Pole musi być wartością numeryczną</div>
+  </div>
+</div>

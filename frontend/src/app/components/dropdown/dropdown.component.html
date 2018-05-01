@@ -1,0 +1,21 @@
+<div class="dropdown"
+     [ngClass]="
+     {
+      'dropdown--opened': opened,
+      'dropdown--fluid': fluid
+     }">
+
+  <div class="dropdown__label" (click)="toggle()">
+    <div class="dropdown__value">{{valueLabel?.label}}</div>
+    <div class="dropdown__caret">
+      <div *ngIf="!opened" class="fa fa-angle-down"></div>
+      <div *ngIf="opened" class="fa fa-angle-up"></div>
+    </div>
+  </div>
+  <div class="dropdown__options"
+       [ngClass]="{'dropdown__options--up': dropup}">
+    <div *ngFor="let o of options"
+         class="dropdown__option"
+         (click)="select(o)">{{o.label}}</div>
+  </div>
+</div>

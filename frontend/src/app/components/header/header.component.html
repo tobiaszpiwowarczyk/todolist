@@ -1,0 +1,21 @@
+<div class="header">
+  <div class="container">
+    <a [routerLink]="['/home']" class="header__brand">TODO List</a>
+    <button class="header__menu__opener">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  
+    <div class="header__menu">
+      <div class="header__menu__item">
+        <div class="fa fa-fw fa-user"></div>
+        <span>{{username}}</span>
+      </div>
+      <div class="header__menu__item header__menu__item--link" (click)="logout()">
+        <div class="fa fa-fw fa-sign-out"></div>
+        <span>Wyloguj się</span>
+      </div>
+    </div>
+  </div>
+</div>

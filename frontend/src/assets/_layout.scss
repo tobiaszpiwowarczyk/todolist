@@ -1,0 +1,20 @@
+
+@import "variables";
+@import "mixins";
+
+.container {
+  position: relative;
+  width: $laptop-width;
+  margin: 0 auto;
+  color: $black;
+
+  &.content__container {
+    position: relative;
+    margin-top: $header-height;
+    padding: 20px 0;
+  }
+
+  @include laptop {
+    width: 100%;
+  }
+}

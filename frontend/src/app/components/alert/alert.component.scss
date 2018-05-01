@@ -1,0 +1,92 @@
+
+@import "../../../assets/variables";
+@import "../../../assets/mixins";
+
+// --------------------------------------------
+
+$alert-height: 70px;
+$alert-z-index: 10;
+
+// --------------------------------------------
+
+
+.alert {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: .2s $bezier;
+
+  .fa {
+    position: absolute;
+    height: $alert-height;
+    width: $alert-height;
+    text-align: center;
+    line-height: $alert-height;
+    font-size: $icon-font-size;
+  }
+
+  @include element("icon") {
+    left: 0;
+  }
+
+  @include element("message") {
+    position: relative;
+    width: calc(100% - #{$alert-height * 2});
+    text-align: center;
+    padding: 0 15px;
+    font: {
+      size: 18px;
+      weight: 900;
+    };
+  }
+
+  .fa-times {
+    right: 0;
+    cursor: pointer;
+  }
+
+  @include modifier("shown") {
+    height: $alert-height;
+  }
+
+  @include modifier("warming") {
+    background: $yellow;
+    color: darken($yellow, 40%);
+
+    .alert__icon {
+      border-right: 1px solid rgba(darken($yellow, 40%), 0.5);
+    }
+
+    .fa-times {
+      border-left: 1px solid rgba(darken($yellow, 40%), 0.5);
+
+      &:hover {
+        color: darken($yellow, 45%);
+      }
+    }
+  }
+
+  @include modifier("success") {
+    background: $green;
+    color: darken($green, 40%);
+
+    .alert__icon {
+      border-right: 1px solid rgba(darken($green, 40%), 0.5);
+    }
+
+    .fa-times {
+      border-left: 1px solid rgba(darken($green, 40%), 0.5);
+
+      &:hover {
+        color: darken($green, 45%);
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+<div class="todo-list"
+     [ngClass]="
+     {
+      'todo-list--loading': todoList?.processing
+     }">
+
+  <div class="todo-list__header">
+    <div class="todo-list__header__title">
+      <h2>
+        <a [routerLink]="['/todolist', todoList?.id]">{{todoList?.name}}</a>
+      </h2>
+    </div>
+
+    <div class="todo-list__options">
+      <div class="todo-list__button todo-list__button--edit" (click)="edit()">
+        <div class="fa fa-pencil"></div>
+      </div>
+      <div class="todo-list__button todo-list__button--close" (click)="delete()">
+        <div class="fa fa-trash-o"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="todo-list__meta">
+    <div class="todo-list__meta__item">
+      <div class="fa fa-fw fa-calendar-o"></div>
+      <span>{{todoList?.createdDate}}</span>
+    </div>
+    <div class="todo-list__meta__item">
+      <div class="fa fa-fw fa-list-ul"></div>
+      <span>{{todoList?.todosSize}}</span>
+    </div>
+  </div>
+
+</div>

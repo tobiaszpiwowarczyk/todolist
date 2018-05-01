@@ -1,0 +1,124 @@
+
+@import "../../../assets/variables";
+@import "../../../assets/mixins";
+
+// --------------------------------------------
+
+$input-height: 60px;
+$input-padding: 15px;
+$input-border-width: 2px;
+
+// --------------------------------------------
+
+
+.input {
+  position: relative;
+  width: 100%;
+  min-height: $input-height;
+  color: $black;
+  border: $input-border-width solid $grey;
+
+  input {
+    width: 100%;
+    height: $input-height - ($input-border-width * 2);
+    border: 0;
+    padding: $input-padding;
+    font-size: 16px;
+    background: $white;
+    color: $black;
+  }
+
+  @include element("wrapper") {
+    position: relative;
+    width: 100%;
+    height: $input-height;
+    border: $input-border-width solid $grey;
+    display: flex;
+    align-items: stretch;
+    transition: .2s $bezier;
+
+    .fa {
+      position: relative;
+      height: 100%;
+      width: $input-height;
+      text-align: center;
+      line-height: $input-height - $input-border-width;
+      font-size: $icon-font-size;
+      color: $grey;
+
+      &::after {
+        content: "";
+        display: block;
+        position: absolute;
+        right: 0;
+        top: 25%;
+        height: 50%;
+        width: $input-border-width;
+        background: $grey;
+      }
+    }
+
+    input {
+      width: calc(100% - #{$input-height});
+      @include placeholder {
+        color: $grey;
+      }
+    }
+  }
+
+  @include element("validator") {
+    padding: 5px 15px;
+  }
+
+
+
+  @include modifier("iconized") {
+    border: 0;
+    margin: 10px 0;
+  }
+
+  @include modifier("active") {
+
+    border-color: $blue;
+
+    &.input--iconized {
+      .input__wrapper {
+        border-color: $black;
+
+        .fa{
+          color: $black;
+
+          &::after {
+            background: $black;
+          }
+        }
+      }
+    }
+  }
+
+  @include modifier("invalid") {
+    .input__wrapper {
+      border-color: $red;
+
+      .fa {
+        color: $red;
+
+        &::after {
+          background: $red;
+        }
+      }
+    }
+
+    .input__validator {
+      color: $red;
+    }
+  }
+
+  @include modifier("no-border") {
+    border: none;
+
+    input {
+      height: $input-height;
+    }
+  }
+}

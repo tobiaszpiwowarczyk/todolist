@@ -1,0 +1,85 @@
+
+@import "../../../assets/variables";
+@import "../../../assets/mixins";
+
+// --------------------------------------------
+
+$dropdown-height: 60px;
+$dropdown-padding: 15px;
+$dropdown-border-width: 2px;
+
+// --------------------------------------------
+
+
+.dropdown {
+  position: relative;
+  width: $dropdown-height * 4;
+  height: $dropdown-height;
+  background: $white;
+  color: $black;
+  cursor: pointer;
+  font-size: 18px;
+
+  @include element("label") {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 0 $dropdown-padding;
+    line-height: $dropdown-height;
+    border: $dropdown-border-width solid $grey;
+  }
+
+  @include element("caret") {
+    position: absolute;
+    right: $dropdown-padding;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: $icon-font-size;
+  }
+
+
+  @include element("options") {
+    position: absolute;
+    top: $dropdown-height;
+    left: 0;
+    right: 0;
+    height: 0;
+    overflow: hidden;
+    z-index: 2;
+
+    @include modifier("up") {
+      top: 0;
+      transform: translateY(-100%);
+    }
+  }
+
+  @include element("option") {
+    background: darken($white, 5%);
+    position: relative;
+    height: $dropdown-height;
+    padding: 0 $dropdown-padding;
+    line-height: $dropdown-height;
+
+    &:hover {
+      background: darken($white, 10%);
+    }
+  }
+
+
+  @include modifier("opened") {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+    .dropdown__label {
+      border-color: $blue;
+    }
+
+    .dropdown__options {
+      height: auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+  }
+
+  @include modifier("fluid") {
+    width: 100%;
+  }
+}

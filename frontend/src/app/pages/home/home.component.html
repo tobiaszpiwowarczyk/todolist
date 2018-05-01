@@ -1,0 +1,52 @@
+<app-header></app-header>
+
+<div class="container content__container">
+  <div class="content__container__form">
+    <form [formGroup]="addTodoListForm" (ngSubmit)="addTodoList()">
+      <app-input formControlName="name"></app-input>
+      <app-button type="submit" [loading]="!valid" [disabled]="!valid" [large]="true">Dodaj listę</app-button>
+    </form>
+  </div>
+
+
+
+
+
+
+
+
+  <h1 class="centered" *ngIf="user?.todoLists.length == 0">
+    W tej chwili nie masz żadnych list.
+  </h1>
+
+
+
+  <div *ngIf="user?.todoLists.length > 0"
+       class="content__container__grid">
+    <todo-list *ngFor="let t of user?.todoLists"
+               [todoList]="t"
+               (onEdit)="openEditTodoListModal($event)"
+               (onDelete)="removeTodoList(t.id)"></todo-list>
+  </div>
+
+
+  <modal title="Edytuj obiekt" (onApprove)="saveTodoList()" #editTodoListModal>
+    <form [formGroup]="editTodoListForm">
+      <table>
+        <tr>
+          <td>Nazwa listy</td>
+          <td class="compact">
+            <input type="hidden" formControlName="todoListID" />
+            <app-input [noBorder]="true" formControlName="name"></app-input>
+          </td>
+        </tr>
+      </table>
+    </form>
+  </modal>
+
+
+
+</div>
+
+
+<app-alert #alert></app-alert>

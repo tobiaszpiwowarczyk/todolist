@@ -1,0 +1,131 @@
+
+@import "../../../assets/variables";
+@import "../../../assets/mixins";
+
+$control-width: 70px;
+$control-expanded-width: 230px;
+
+.controls {
+  .control {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 0;
+    background: $white;
+    color: $black;
+    font-size: $icon-font-size;
+    width: $control-width;
+    height: $control-width;
+    border-radius: $control-width * 2;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: box-shadow .2s $bezier,
+                border-radius .2s $bezier,
+                width .2s $bezier;
+    overflow: hidden;
+
+    @include element("prev") {
+      left: 20px;
+
+      .control__button {
+        left: 0;
+      }
+      .control__label {
+        left: $control-width;
+      }
+
+    }
+
+    @include element("next") {
+      right: 20px;
+
+      .control__button {
+        right: 0;
+      }
+      .control__label {
+        right: $control-width;
+        justify-content: flex-end;
+      }
+
+    }
+
+    @include element("button") {
+      position: absolute;
+      top: 0;
+      width: $control-width;
+      height: $control-width;
+      display: inline-block;
+      text-align: center;
+      line-height: $control-width;
+      font-size: $icon-font-size;
+    }
+
+    @include element("label") {
+      position: absolute;
+      top: 0;
+      height: $control-width;
+      width: $control-expanded-width - $control-width;
+      font-size: 16px;
+      font-weight: 900;
+      padding: 0 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    &:hover {
+      width: $control-expanded-width;
+      border-radius: 0;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+
+    @include laptop {
+      top: 100%;
+      transform: translateY(-100%);
+      border-radius: 0;
+      width: 50%;
+      box-shadow: none;
+
+      &:hover {
+        width: 50%;
+      }
+
+      @include element("prev") {
+        left: 0;
+      }
+
+      @include element("next") {
+        right: 0;
+      }
+    }
+  }
+}
+
+.todo-list-details {
+  position: relative;
+  width: 100%;
+  background: $white;
+  margin-bottom: 30px;
+  padding: 20px;
+
+  h2 {
+    font-size: 32px;
+  }
+
+  @include element("data") {
+    position: relative;
+    width: 100%;
+    display: flex;
+    margin-top: 20px;
+
+    @include element("item") {
+      position: relative;
+      color: $grey;
+      margin-right: 15px;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}

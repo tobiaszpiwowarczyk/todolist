@@ -1,0 +1,11 @@
+<button [type]="type" 
+        class="button"
+        [disabled]="disabled"
+        [ngClass]="{
+          'button--primary': primary,
+          'button--fluid': fluid,
+          'button--large': large,
+          'button--loading': loading
+        }">
+  <ng-content></ng-content>
+</button>

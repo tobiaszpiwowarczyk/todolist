@@ -1,0 +1,33 @@
+<div class="login-form" [ngClass]="{'form--loading': !valid}">
+  <h1 class="form__title">Zaloguj się</h1>
+
+  <form [formGroup]="loginForm" (ngSubmit)="login()">
+
+    <div class="form__content">
+      <app-input formControlName="username"
+               icon="user"
+               [inputErrors]="{
+                 errors: loginForm?.controls['username']?.errors,
+                 submitted: submitted
+               }"
+               label="Nazwa użytkownika..."></app-input>
+
+      <app-input formControlName="password"
+                inputType="password"
+                icon="lock"
+                [inputErrors]="{
+                  errors: loginForm?.controls['username']?.errors,
+                  submitted: submitted
+                }"
+                label="Hasło..."></app-input>
+    </div>
+
+    <app-button type="submit" [fluid]="true">Zaloguj się</app-button>
+  </form>
+
+  <hr />
+
+  <p>Jeśli nie posiadasz konta, <a [routerLink]="['/register']">Zarejestruj się</a></p>
+</div>
+
+<app-alert #alert></app-alert>

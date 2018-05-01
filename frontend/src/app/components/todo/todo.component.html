@@ -1,0 +1,37 @@
+<div class="todo"
+     [ngClass]="
+     {
+      'todo--loading': todo?.processing
+     }">
+
+  <h3 class="todo__content">{{todo?.content}}</h3>
+
+  <div class="todo__options">
+    <div class="todo__priority todo__priority--{{todo?.priority?.value | lowercase}}">{{todo?.priority?.label}}</div>
+
+    <div class="todo__buttons">
+      <div class="todo__button todo__button__edit" (click)="edit()">
+        <div class="fa fa-fw fa-pencil"></div>
+      </div>
+      <div class="todo__button todo__button__info" (click)="info()">
+        <div class="fa fa-fw fa-info"></div>
+      </div>
+      <div class="todo__button"
+           [ngClass]="{
+          'todo__button__complete': !todo?.completed,
+          'todo__button__danger': todo?.completed
+         }"
+           (click)="complete()">
+
+        <div class="fa fa-fw"
+             [ngClass]="{
+            'fa-check': !todo?.completed,
+            'fa-times': todo?.completed
+           }"></div>
+      </div>
+      <div class="todo__button todo__button__danger" (click)="delete()">
+        <div class="fa fa-fw fa-trash-o"></div>
+      </div>
+    </div>
+  </div>
+</div>

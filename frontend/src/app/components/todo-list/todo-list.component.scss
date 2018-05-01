@@ -1,0 +1,110 @@
+
+@import "../../../assets/variables";
+@import "../../../assets/mixins";
+@import "../../../assets/_states";
+
+// --------------------------------------------
+
+$todo-list-padding: 25px;
+$todo-list-header-height: 80px;
+$todo-button-width: 40px;
+
+// --------------------------------------------
+
+
+.todo-list {
+  position: relative;
+  height: 100%;
+  background: $white;
+  color: $black;
+  box-shadow: none;
+  display: block;
+  transition: box-shadow .2s $bezier;
+  overflow: hidden;
+
+  &:not(.todo-list--loading):hover {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+
+    .todo-list__button {
+      top: 0;
+      opacity: 1;
+    }
+  }
+
+  @include element("header") {
+    position: relative;
+    width: 100%;
+    min-height: $todo-list-header-height;
+    display: flex;
+    justify-content: space-between;
+
+    @include element("title") {
+      position: relative;
+      padding: $todo-list-padding;
+      display: flex;
+      align-items: center;
+
+      h2 {
+        position: relative;
+        a {
+          color: inherit;
+        }
+      }
+    }
+  }
+
+  @include element("options") {
+    position: relative;
+    height: $todo-button-width;
+    display: flex;
+    margin: $todo-list-padding;
+  }
+
+  @include element("button") {
+    position: relative;
+    top: -$todo-list-header-height / 2;
+    width: $todo-list-header-height / 2;
+    height: 100%;
+    font-size: $icon-font-size;
+    cursor: pointer;
+    text-align: center;
+    line-height: $todo-list-header-height / 2;
+    opacity: 0;
+    transition: opacity .2s $bezier,
+                top .2s $bezier;
+
+    @include modifier("edit") {
+      &:hover {
+        color: $blue;
+      }
+    }
+    @include modifier("close") {
+      transition-delay: .05s;
+      &:hover {
+        color: $red;
+      }
+    }
+  }
+
+  @include element("meta") {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: $todo-list-padding;
+
+    @include element("item") {
+      display: inline-block;
+      margin-right: 10px;
+      font-size: 14px;
+      color: $grey;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+
+  @include modifier("loading") {
+    @extend .loading;
+  }
+}

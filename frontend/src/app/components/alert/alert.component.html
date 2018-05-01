@@ -1,0 +1,6 @@
+<div class="alert alert--{{alertType?.name}}"
+     [ngClass]="{'alert--shown': shown}">
+  <div class="fa fa-{{alertType?.icon}} alert__icon"></div>
+  <div class="alert__message">{{message}}</div>
+  <div class="fa fa-times" (click)="hide()"></div>
+</div>
