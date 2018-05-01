@@ -14,5 +14,5 @@ public interface TodoService {
 
     List<Todo> addTodo(UUID todoListID, Todo todo);
     List<Todo> updateTodo(UUID todoListID, UUID todoID, Todo todo);
-    void removeTodo(UUID todoID);
+    String removeTodo(UUID todoID);
 }

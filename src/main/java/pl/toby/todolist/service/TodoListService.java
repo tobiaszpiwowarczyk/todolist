@@ -12,7 +12,7 @@ public interface TodoListService {
     boolean exists(TodoList todoList);
 
     TodoList findById(UUID id);
-    List<TodoList> addTodoList(String username, TodoList todoList);
+    TodoList addTodoList(TodoList todoList, User user);
     TodoList updateTodoList(UUID todoListID, TodoList todoList);
-    List<TodoList> removeTodoList(String username, UUID todoListID);
+    String removeTodoList(UUID todoListID);
 }

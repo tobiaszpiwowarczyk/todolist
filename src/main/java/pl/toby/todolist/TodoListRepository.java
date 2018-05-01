@@ -13,4 +13,6 @@ public interface TodoListRepository extends CrudRepository<TodoList, UUID> {
 
     @Query(value = "select tl from TodoList tl order by tl.createdDate")
     List<TodoList> findAll();
+
+    TodoList findById(UUID id);
 }

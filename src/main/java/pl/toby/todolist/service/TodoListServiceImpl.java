@@ -25,29 +25,8 @@ public class TodoListServiceImpl implements TodoListService {
     }
 
 
-    // --------------------------------------------------------------------------------------------------------
 
-    private TodoList setNext(TodoList todoList) {
-        todoList.setNextTodoList(null);
 
-        if(this.findAll().indexOf(todoList) > 0) {
-            todoList.setNextTodoList(this.findAll().get(this.findAll().indexOf(todoList) - 1));
-        }
-
-        return todoList;
-    }
-
-    // --------------------------------------------------------------------------------------------------------
-
-    private TodoList setPrev(TodoList todoList) {
-        todoList.setPrevTodoList(null);
-
-        if(this.findAll().indexOf(todoList) < this.findAll().size() - 1) {
-            todoList.setPrevTodoList(this.findAll().get(this.findAll().indexOf(todoList) + 1));
-        }
-
-        return todoList;
-    }
 
     // --------------------------------------------------------------------------------------------------------
 
@@ -69,30 +48,19 @@ public class TodoListServiceImpl implements TodoListService {
 
     @Override
     public TodoList findById(UUID id) {
-        return todoListRepository.findOne(id);
+        return todoListRepository.findById(id);
     }
 
     // --------------------------------------------------------------------------------------------------------
 
     @Override
-    public List<TodoList> addTodoList(String username, TodoList todoList) {
-        User user = userRepository.findByUsername(username);
+    public TodoList addTodoList(TodoList todoList, User user) {
 
         todoList.setCreatedDate(new Date());
         todoList.setUser(user);
+
         todoListRepository.save(todoList);
-
-        todoList = this.setNext(todoList);
-        todoListRepository.save(todoList);
-
-        for(TodoList t : this.findAll()) {
-            t = this.setPrev(t);
-            t = this.setNext(t);
-
-            todoListRepository.save(t);
-        }
-
-        return user.getTodoLists();
+        return todoList;
     }
 
     // --------------------------------------------------------------------------------------------------------
@@ -110,35 +78,10 @@ public class TodoListServiceImpl implements TodoListService {
     // --------------------------------------------------------------------------------------------------------
 
     @Override
-    public List<TodoList> removeTodoList(String username, UUID todoListID) {
-        User user = userRepository.findByUsername(username);
-        TodoList t = this.findById(todoListID);
-
-        if(t.getPrevTodoList() != null) {
-            TodoList tPrev = this.findById(t.getPrevTodoList().getId());
-            tPrev.setNextTodoList(null);
-            todoListRepository.save(tPrev);
-
-        }
-        if (t.getNextTodoList() != null) {
-            TodoList tNext = this.findById(t.getNextTodoList().getId());
-            tNext.setPrevTodoList(null);
-            todoListRepository.save(tNext);
-        }
-
-        t.setPrevTodoList(null);
-        t.setNextTodoList(null);
+    public String removeTodoList(UUID todoListID) {
         todoListRepository.delete(todoListID);
 
-        if(this.findAll().size() > 1) {
-            for(TodoList t1 : this.findAll()) {
-                t1 = this.setPrev(t1);
-                t1 = this.setNext(t1);
+        return "TodoList has been removed successfully";
 
-                todoListRepository.save(t1);
-            }
-        }
-
-        return user.getTodoLists();
     }
 }

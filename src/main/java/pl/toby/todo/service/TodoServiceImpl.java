@@ -76,7 +76,9 @@ public class TodoServiceImpl implements TodoService {
     // --------------------------------------------------------------------------------------------------------
 
     @Override
-    public void removeTodo(UUID todoID) {
+    public String removeTodo(UUID todoID) {
         todoRepository.delete(todoID);
+
+        return "Todo object has been removed successfully";
     }
 }

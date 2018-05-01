@@ -17,11 +17,11 @@ public class DatabaseLoader implements CommandLineRunner {
     private UserRepository userRepository;
 
     @Override
-    public void run(String... args) throws Exception {
-        List<User> userList = new ArrayList<>();
-        User user = new User("jkowalski", "haslo123", "Jan", "Kowalski", 18);
-        user.setRoles(UserRole.USER);
-        userList.add(user);
+    public void run(String... args) {
+        List<User> userList = new ArrayList<User>(){{
+            add(new User("jkowalski", "haslo123", "Jan", "Kowalski", 18, UserRole.USER));
+            add(new User("anowak", "haslo123", "Anna", "Nowak", 21, UserRole.ADMIN));
+        }};
 
         userRepository.save(userList);
     }

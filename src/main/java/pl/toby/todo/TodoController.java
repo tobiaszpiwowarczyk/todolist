@@ -79,8 +79,11 @@ public class TodoController {
             value = "{todoID}/remove",
             method = RequestMethod.DELETE
     )
-    public void removeTodo(@PathVariable UUID todoID) {
-        todoService.removeTodo(todoID);
+    public Response<String> removeTodo(@PathVariable UUID todoID) {
+        return new Response<>(
+            HttpStatus.OK,
+            todoService.removeTodo(todoID)
+        );
     }
 
     // --------------------------------------------------------------------------------------------------------

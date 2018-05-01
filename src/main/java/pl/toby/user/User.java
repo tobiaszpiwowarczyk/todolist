@@ -1,6 +1,10 @@
 package pl.toby.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.toby.core.misc.BaseEntity;
@@ -9,12 +13,11 @@ import pl.toby.user.role.UserRole;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
-public class User extends BaseEntity {
-
+public class User extends BaseEntity implements UserDetails {
 
     public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
@@ -28,7 +31,8 @@ public class User extends BaseEntity {
     private String lastName;
     private int age;
 
-    private String[] roles;
+    @ElementCollection
+    private List<String> roles;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("user")
@@ -39,17 +43,58 @@ public class User extends BaseEntity {
 
     public User() {
         super();
+        this.roles = new ArrayList<>();
         this.todoLists = new ArrayList<>();
     }
 
-    public User(String username, String password, String firstName, String lastName, int age) {
+    public User(String username, String password, String firstName, String lastName, int age, UserRole role) {
         this();
         this.username = username;
         this.setPassword(password);
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
+        this.setRoles(role);
     }
+
+
+
+
+
+
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+    }
+
+
+
+
 
 
     public String getUsername() {
@@ -64,7 +109,7 @@ public class User extends BaseEntity {
         return password;
     }
 
-    public void setPassword(String password) {
+    private void setPassword(String password) {
         this.password = PASSWORD_ENCODER.encode(password);
     }
 
@@ -92,17 +137,25 @@ public class User extends BaseEntity {
         this.age = age;
     }
 
-    public String[] getRoles() {
+    public List<String> getRoles() {
         return roles;
     }
 
     public void setRoles(UserRole role) {
-        this.roles = role.getRoles();
+        this.roles = Arrays.asList(role.getRoles());
+    }
+
+    public boolean hasRole(UserRole role) {
+        return roles.containsAll(Collections.singletonList(role.getRoles()));
     }
 
     public List<TodoList> getTodoLists() {
         return todoLists;
     }
+
+
+
+
 
 
     @Override

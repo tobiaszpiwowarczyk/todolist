@@ -2,7 +2,6 @@ package pl.toby.todolist;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import pl.toby.core.misc.BaseEntity;
 import pl.toby.todo.Todo;
 import pl.toby.user.User;
@@ -20,17 +19,6 @@ public class TodoList extends BaseEntity {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MMM-dd")
     private Date createdDate;
-
-
-    @OneToOne
-    @JsonIgnoreProperties({"createdDate", "prevTodoList", "nextTodoList", "user", "todos"})
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private TodoList prevTodoList;
-
-    @OneToOne
-    @JsonIgnoreProperties({"createdDate", "prevTodoList", "nextTodoList", "user", "todos"})
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private TodoList nextTodoList;
 
 
     @ManyToOne
@@ -70,22 +58,6 @@ public class TodoList extends BaseEntity {
 
     public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
-    }
-
-    public TodoList getPrevTodoList() {
-        return prevTodoList;
-    }
-
-    public void setPrevTodoList(TodoList prevTodoList) {
-        this.prevTodoList = prevTodoList;
-    }
-
-    public TodoList getNextTodoList() {
-        return nextTodoList;
-    }
-
-    public void setNextTodoList(TodoList nextTodoList) {
-        this.nextTodoList = nextTodoList;
     }
 
     public User getUser() {
