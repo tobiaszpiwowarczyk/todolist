@@ -3,13 +3,12 @@ package pl.toby.todo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.toby.todo.Todo;
+import pl.toby.todo.TodoBuilder;
 import pl.toby.todo.TodoRepository;
 import pl.toby.todo.prority.TodoPriority;
-import pl.toby.todolist.TodoList;
+import pl.toby.todo.prority.TodoPriorityConverter;
 import pl.toby.todolist.TodoListRepository;
 
-import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -40,37 +39,35 @@ public class TodoServiceImpl implements TodoService {
     // --------------------------------------------------------------------------------------------------------
 
     @Override
-    public List<Todo> addTodo(UUID todoListID, Todo todo) {
-
-        TodoList todoList = todoListRepository.findOne(todoListID);
-
-        todo.setCreatedDate(new Date());
-        todo.setCompleted(false);
-        todo.setPriority(TodoPriority.LOW);
-        todo.setTodoList(todoList);
-
+    public Todo addTodo(UUID todoListID, Todo todo) {
+        
+        todo = new TodoBuilder()
+                .content(todo.getContent())
+                .todoList(todoListRepository.findOne(todoListID))
+                .build();
+        
         todoRepository.save(todo);
 
-        return todoList.getTodos();
+        return todo;
     }
 
     // --------------------------------------------------------------------------------------------------------
 
     @Override
-    public List<Todo> updateTodo(UUID todoListID, UUID todoID, Todo todo) {
+    public Todo updateTodo(UUID todoListID, UUID todoID, Todo todo) {
+        
+        todo = new TodoBuilder(todo).build();
 
-        TodoList todoList = todoListRepository.findOne(todoListID);
         Todo todoFound = todoRepository.findOne(todoID);
-
-        if(todo.getContent() != null) todoFound.setContent(todo.getContent());
-        todoFound.setCompleted(todo.isCompleted());
-        if (todo.getPriority() != null) {
-            todoFound.setPriority(TodoPriority.valueOf(todo.getPriority().toString()));
-        }
+        todoFound = new TodoBuilder(todoFound)
+                .content(todo.getContent())
+                .completed(todo.isCompleted())
+                .priority(TodoPriorityConverter.convert(todo.getPriority().toString()))
+                .build();
 
         todoRepository.save(todoFound);
 
-        return todoList.getTodos();
+        return todoFound;
     }
 
     // --------------------------------------------------------------------------------------------------------

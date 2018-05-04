@@ -42,27 +42,26 @@ public class UserController extends BaseController {
             value = "login",
             method = RequestMethod.POST
     )
-    public Response<Map<String, Object>> login(@RequestBody Map<String, String> credentials) {
+    public Response<Map<String, String>> login(@RequestBody Map<String, String> credentials) {
 
         String username = credentials.get("username");
         String password = credentials.get("password");
 
-        if(username == null || password == null) throw new AccessDeniedException("Należy wypełnić wszystkie pola w formularzu");
+        if(username == null || password == null) 
+            throw new AccessDeniedException("Należy wypełnić wszystkie pola w formularzu");
         
         User user = userService.findByUsername(username);
         
-        if(user == null || !User.PASSWORD_ENCODER.matches(password, user.getPassword())) throw new UserBadCredentialsException();
-        if(user.hasRole(UserRole.LOCKED)) throw new UserException("Nie można zalogować się na to konto, gdyż jest ono zablokowane");
+        if(user == null || !User.PASSWORD_ENCODER.matches(password, user.getPassword())) 
+            throw new UserBadCredentialsException();
+        
+        if(user.hasRole(UserRole.LOCKED)) 
+            throw new UserException("Nie można zalogować się na to konto, gdyż jest ono zablokowane");
 
         return new Response<>(
                 HttpStatus.OK,
-                new HashMap<String, Object>() {{
-                    put("token", JwtUtil.createToken(user));
-                    put("userData", new HashMap<String, Object>() {{
-                        put("username", user.getUsername());
-                        put("firstName", user.getFirstName());
-                        put("lastName", user.getLastName());
-                    }});
+                new HashMap<String, String>() {{
+                    put("access_token", JwtUtil.createToken(user));
                 }}
         );
     }

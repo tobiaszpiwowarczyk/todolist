@@ -71,4 +71,14 @@ public class TodoList extends BaseEntity {
     public List<Todo> getTodos() {
         return todos;
     }
+
+    @Override
+    public String toString() {
+        return "TodoList{" +
+                "name='" + name + '\'' +
+                ", createdDate=" + createdDate +
+                ", user=" + user +
+                ", todos=" + todos +
+                '}';
+    }
 }

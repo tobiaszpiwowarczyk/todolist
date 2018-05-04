@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +29,7 @@ public class JwtFilter extends GenericFilterBean {
         String authHeader = request.getHeader(JwtUtil.AUTHORIZATION);
 
         if(authHeader == null || !authHeader.startsWith(JwtUtil.TOKEN_PREFIX))
-            ((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Brak tokenu");
+            ((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Musisz być zalogowany, by wykonać żądanie");
         else {
             try {
                 String token = authHeader.substring(JwtUtil.TOKEN_PREFIX.length());

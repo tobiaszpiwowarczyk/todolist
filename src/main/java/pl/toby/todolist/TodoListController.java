@@ -14,7 +14,6 @@ import pl.toby.todolist.exception.TodoListExistsException;
 import pl.toby.todolist.exception.TodoListNotFoundException;
 import pl.toby.todolist.service.TodoListServiceImpl;
 import pl.toby.user.User;
-import pl.toby.user.exception.UserException;
 import pl.toby.user.exception.UserNotAllowedException;
 import pl.toby.user.service.UserService;
 
@@ -37,16 +36,16 @@ public class TodoListController extends BaseController {
     // --------------------------------------------------------------------------------------------------------
 
     @RequestMapping(
-            value = "{id}",
+            value = "{todoListID}",
             method = RequestMethod.GET
     )
-    public Response<TodoList> findById(@PathVariable UUID id) {
+    public Response<TodoList> findById(@PathVariable UUID todoListID) {
 
-        if(todoListService.findById(id) == null) {
+        if(todoListService.findById(todoListID) == null) {
             throw new TodoListNotFoundException();
         }
 
-        return new Response<>(HttpStatus.OK, todoListService.findById(id));
+        return new Response<>(HttpStatus.OK, todoListService.findById(todoListID));
     }
 
     // --------------------------------------------------------------------------------------------------------
@@ -74,27 +73,29 @@ public class TodoListController extends BaseController {
     // --------------------------------------------------------------------------------------------------------
 
     @RequestMapping(
-            value = "{todoListID}/update",
+            value = "update",
             method = RequestMethod.POST
     )
     public Response<TodoList> updateTodoList(
             @AuthenticationPrincipal Principal principal,
-            @PathVariable UUID todoListID,
             @RequestBody TodoList todoList) {
-        if(!todoListService.findById(todoListID).getUser().getUsername().equals(principal.getName())) {
-            throw new UserNotAllowedException();
-        }
 
+        if(!todoListService.exists(todoList))
+            throw new TodoListNotFoundException();
+        
+        if(!todoListService.findById(todoList.getId()).getUser().getUsername().equals(principal.getName()))
+            throw new UserNotAllowedException();
+        
         return new Response<>(
                 HttpStatus.OK,
-                todoListService.updateTodoList(todoListID, todoList)
+                todoListService.updateTodoList(todoList)
         );
     }
 
     // --------------------------------------------------------------------------------------------------------
 
     @RequestMapping(
-            value = "{todoListID}/remove",
+            value = "{todoListID}",
             method = RequestMethod.DELETE
     )
     public Response<String> removeTodoList(
@@ -105,6 +106,9 @@ public class TodoListController extends BaseController {
             throw new UserNotAllowedException();
         }
 
+        if(todoListService.findById(todoListID) == null)
+            throw new TodoListNotFoundException();
+        
         return new Response<>(
                 HttpStatus.OK,
                 todoListService.removeTodoList(todoListID)

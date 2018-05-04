@@ -3,8 +3,8 @@ package pl.toby.user.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.toby.user.User;
+import pl.toby.user.UserBuilder;
 import pl.toby.user.UserRepository;
-import pl.toby.user.role.UserRole;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -31,8 +31,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(User user) {
-        user.setRoles(UserRole.USER);
-        userRepository.save(user);
+        userRepository.save(new UserBuilder(user).build());
 
         return user;
     }

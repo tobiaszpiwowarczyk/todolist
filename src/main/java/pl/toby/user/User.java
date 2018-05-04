@@ -1,5 +1,6 @@
 package pl.toby.user;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,7 +30,13 @@ public class User extends BaseEntity implements UserDetails {
 
     private String firstName;
     private String lastName;
-    private int age;
+    private String email;
+    
+    @JsonFormat(
+            shape = JsonFormat.Shape.STRING,
+            pattern = "yyyy-MMM-dd"
+    )
+    private Date createdDate;
 
     @ElementCollection
     private List<String> roles;
@@ -47,13 +54,14 @@ public class User extends BaseEntity implements UserDetails {
         this.todoLists = new ArrayList<>();
     }
 
-    public User(String username, String password, String firstName, String lastName, int age, UserRole role) {
+    public User(String username, String password, String firstName, String lastName, String email, UserRole role, Date createdDate) {
         this();
         this.username = username;
         this.setPassword(password);
         this.firstName = firstName;
         this.lastName = lastName;
-        this.age = age;
+        this.email = email;
+        this.createdDate = createdDate;
         this.setRoles(role);
     }
 
@@ -109,7 +117,7 @@ public class User extends BaseEntity implements UserDetails {
         return password;
     }
 
-    private void setPassword(String password) {
+    public void setPassword(String password) {
         this.password = PASSWORD_ENCODER.encode(password);
     }
 
@@ -129,12 +137,12 @@ public class User extends BaseEntity implements UserDetails {
         this.lastName = lastName;
     }
 
-    public int getAge() {
-        return age;
+    public String getEmail() {
+        return email;
     }
 
-    public void setAge(int age) {
-        this.age = age;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public List<String> getRoles() {
@@ -145,6 +153,14 @@ public class User extends BaseEntity implements UserDetails {
         this.roles = Arrays.asList(role.getRoles());
     }
 
+    public Date getCreatedDate() {
+        return createdDate;
+    }
+
+    public void setCreatedDate(Date createdDate) {
+        this.createdDate = createdDate;
+    }
+    
     public boolean hasRole(UserRole role) {
         return roles.containsAll(Collections.singletonList(role.getRoles()));
     }

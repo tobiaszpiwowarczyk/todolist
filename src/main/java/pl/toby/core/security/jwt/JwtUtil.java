@@ -20,8 +20,10 @@ public class JwtUtil {
     public static String createToken(User user) {
         return TOKEN_PREFIX + Jwts.builder()
                 .setSubject(user.getUsername())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .claim(ROLE_CLAIM, user.getRoles())
+                .claim("firstName", user.getFirstName())
+                .claim("lastName", user.getLastName())
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS512, SECRET_KEY)
                 .compact();
     }

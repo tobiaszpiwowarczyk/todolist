@@ -14,6 +14,7 @@ import java.util.Date;
 @Entity
 public class Todo extends BaseEntity {
 
+    @Column(nullable = false)
     private String content;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MMM-dd")

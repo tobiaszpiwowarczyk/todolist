@@ -3,6 +3,7 @@ package pl.toby.todolist.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.toby.todolist.TodoList;
+import pl.toby.todolist.TodoListBuilder;
 import pl.toby.todolist.TodoListRepository;
 import pl.toby.user.User;
 import pl.toby.user.UserRepository;
@@ -10,7 +11,6 @@ import pl.toby.user.UserRepository;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class TodoListServiceImpl implements TodoListService {
@@ -39,9 +39,8 @@ public class TodoListServiceImpl implements TodoListService {
 
     @Override
     public boolean exists(TodoList todoList) {
-        return todoListRepository.findAll().stream()
-                    .filter(t -> t.getName().equals(todoList.getName()))
-                    .collect(Collectors.toList()).size() > 0;
+        return todoListRepository.findByTodoListName(todoList.getName()) != null ||
+                todoListRepository.findById(todoList.getId()) != null;
     }
 
     // --------------------------------------------------------------------------------------------------------
@@ -55,10 +54,7 @@ public class TodoListServiceImpl implements TodoListService {
 
     @Override
     public TodoList addTodoList(TodoList todoList, User user) {
-
-        todoList.setCreatedDate(new Date());
-        todoList.setUser(user);
-
+        todoList = new TodoListBuilder().name(todoList.getName()).createdDate(new Date()).user(user).build();
         todoListRepository.save(todoList);
         return todoList;
     }
@@ -66,8 +62,8 @@ public class TodoListServiceImpl implements TodoListService {
     // --------------------------------------------------------------------------------------------------------
 
     @Override
-    public TodoList updateTodoList(UUID todoListID, TodoList todoList) {
-        TodoList todoListFound = todoListRepository.findOne(todoListID);
+    public TodoList updateTodoList(TodoList todoList) {
+        TodoList todoListFound = todoListRepository.findOne(todoList.getId());
         todoListFound.setName(todoList.getName());
 
         todoListRepository.save(todoListFound);
