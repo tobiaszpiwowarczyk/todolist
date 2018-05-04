@@ -1,6 +1,7 @@
 package pl.toby.core.security.jwt;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -37,6 +38,9 @@ public class JwtFilter extends GenericFilterBean {
                 request.setAttribute("claims", claims);
                 SecurityContextHolder.getContext().setAuthentication(getAuthentication(claims));
                 chain.doFilter(req, res);
+            }
+            catch(ExpiredJwtException e) {
+                ((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Twój token wygasł. Musisz się zalogować ponownie");
             }
             catch(Exception e) {
                 ((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getLocalizedMessage());
