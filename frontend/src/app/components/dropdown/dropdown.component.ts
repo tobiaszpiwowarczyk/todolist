@@ -1,16 +1,6 @@
 import {Component, OnInit, forwardRef, Input, ElementRef, HostListener} from "@angular/core";
 import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
-
-
-export class DropdownValue {
-
-  value: string;
-  label: string;
-
-  constructor(values: Object = {}) {
-    Object.assign(this, values);
-  }
-}
+import { DropdownValue } from "./DropdownValue";
 
 
 @Component({
@@ -27,9 +17,10 @@ export class DropdownValue {
 })
 export class DropdownComponent implements OnInit, ControlValueAccessor {
 
-  @Input() valueLabel: DropdownValue;
+  @Input() value: DropdownValue;
   @Input() options: DropdownValue[];
   @Input() fluid: boolean = false;
+  @Input() noBorder: boolean = false;
 
   wrapper: any = {};
   opened: boolean = false;
@@ -54,24 +45,24 @@ export class DropdownComponent implements OnInit, ControlValueAccessor {
     this.opened = !this.opened;
   }
 
-  public select(value: DropdownValue): void {
-    this.valueLabel = value;
+  public select(dropValue: DropdownValue): void {
+    this.value = dropValue;
     this.opened = false;
-    this.propagateChange(value);
+    this.propagateChange(dropValue);
   }
 
   @HostListener("window:resize", ["$event"])
   public checkSize(evt) {
-    let elTop = this.wrapper.getBoundingClientRect().top + window.scrollY;
-    let elHeight = this.wrapper.querySelector(".dropdown").offsetHeight;
-    let dropdownOptionsLength = this.wrapper.querySelector(".dropdown__options").childNodes.length - 3;
+    const elTop = this.wrapper.getBoundingClientRect().top + window.scrollY;
+    const elHeight = this.wrapper.querySelector(".dropdown").offsetHeight;
+    const dropdownOptionsLength = this.wrapper.querySelector(".dropdown__options").childNodes.length - 3;
 
     this.dropup = (elTop + elHeight + (elHeight * dropdownOptionsLength)) > evt.target.innerHeight;
   }
 
 
   writeValue(value: any): void {
-    this.valueLabel = value;
+    this.value = value;
   }
 
   registerOnChange(fn: any): void {

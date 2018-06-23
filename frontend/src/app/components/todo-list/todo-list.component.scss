@@ -19,7 +19,7 @@ $todo-button-width: 40px;
   color: $black;
   box-shadow: none;
   display: block;
-  transition: box-shadow .2s $bezier;
+  transition: box-shadow $animation-time $bezier;
   overflow: hidden;
 
   &:not(.todo-list--loading):hover {
@@ -70,8 +70,8 @@ $todo-button-width: 40px;
     text-align: center;
     line-height: $todo-list-header-height / 2;
     opacity: 0;
-    transition: opacity .2s $bezier,
-                top .2s $bezier;
+    transition: opacity $animation-time $bezier,
+                top $animation-time $bezier;
 
     @include modifier("edit") {
       &:hover {

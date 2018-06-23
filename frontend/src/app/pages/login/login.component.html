@@ -10,13 +10,13 @@
                  errors: loginForm?.controls['username']?.errors,
                  submitted: submitted
                }"
-               label="Nazwa użytkownika..."></app-input>
+               label="Nazwa użytkownika..." #username></app-input>
 
       <app-input formControlName="password"
                 inputType="password"
                 icon="lock"
                 [inputErrors]="{
-                  errors: loginForm?.controls['username']?.errors,
+                  errors: loginForm?.controls['password']?.errors,
                   submitted: submitted
                 }"
                 label="Hasło..."></app-input>

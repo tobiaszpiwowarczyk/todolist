@@ -3,10 +3,11 @@ import {HomeService} from "../../services/home/home.service";
 import {User} from "./User";
 import {FormGroup, FormControl, Validators} from "@angular/forms";
 import {AlertComponent} from "../../components/alert/alert.component";
-import {AlertType} from "../../components/alert/AlertType";
+import { AlertType } from '../../components/alert/AlertType';
 import {TodoList} from "../../components/todo-list/TodoList";
 import {ModalComponent} from "../../components/modal/modal.component";
 import {Title} from "@angular/platform-browser";
+import "rxjs/add/operator/finally";
 
 @Component({
   selector: 'app-home',
@@ -30,6 +31,8 @@ export class HomeComponent implements OnInit {
   @ViewChild("alert") alert: AlertComponent;
   @ViewChild("editTodoListModal") editTodoListModal: ModalComponent;
 
+  err;
+
   // -----------------------------------------------------------------------------------------
 
   constructor(
@@ -37,7 +40,10 @@ export class HomeComponent implements OnInit {
     private title: Title
   ) {
     this.homeService.getUserData()
-      .then(res => this.user = res);
+      .subscribe(
+        res => this.user = res,
+        err => this.err = err
+      );
   }
 
   // -----------------------------------------------------------------------------------------
@@ -49,7 +55,7 @@ export class HomeComponent implements OnInit {
       name: new FormControl('', Validators.required)
     });
     this.editTodoListForm = new FormGroup({
-      todoListID: new FormControl(''),
+      id: new FormControl(''),
       name: new FormControl('')
     });
   }
@@ -57,24 +63,26 @@ export class HomeComponent implements OnInit {
   // -----------------------------------------------------------------------------------------
 
   public addTodoList(): void {
+    this.err = null;
+
     if(!this.addTodoListForm.valid) {
       this.alert.setAlertType(AlertType.WARMING).show("Musisz wprowadzić nazwę listy");
     } else {
+
       this.valid = false;
       this.addTodoListForm.controls["name"].disable();
+
       this.homeService.addTodoList(this.addTodoListForm.value)
-        .then(res => {
-          if(typeof res == "object") {
-            this.user.todoLists.unshift(res);
-            this.alert.setAlertType(AlertType.SUCCESS).show("Lista została dodana pomyślnie");
-          }
-          else {
-            this.alert.setAlertType(AlertType.WARMING).show(res);
-          }
+        .finally(() => {
           this.valid = true;
           this.addTodoListForm.controls["name"].enable();
           this.addTodoListForm.reset();
-        });
+        })
+        .subscribe(res => {
+          this.user.todoLists.unshift(res);
+          this.alert.setAlertType(AlertType.SUCCESS).show("Lista została dodana pomyślnie");
+        },
+        err => this.handleError(err));
     }
   }
 
@@ -82,7 +90,7 @@ export class HomeComponent implements OnInit {
 
   public openEditTodoListModal(todoList: TodoList): void {
     this.editTodoList = todoList;
-    this.editTodoListForm.controls["todoListID"].setValue(todoList.id);
+    this.editTodoListForm.controls["id"].setValue(todoList.id);
     this.editTodoListForm.controls["name"].setValue(todoList.name);
     this.editTodoListModal.show();
   }
@@ -90,28 +98,34 @@ export class HomeComponent implements OnInit {
   // -----------------------------------------------------------------------------------------
 
   public saveTodoList(): void {
+    this.err = null;
     this.editTodoList.processing = true;
     this.homeService.editTodoList(this.editTodoListForm.value)
-      .then(res => {
+      .finally(() => this.editTodoList.processing = false)
+      .subscribe(res => {
         const todoList: TodoList = this.user.todoLists.find(tl => tl.id == res.id);
 
         todoList.name = res.name;
-        this.editTodoList.processing = false;
         this.alert.setAlertType(AlertType.SUCCESS).show("Lista została zaktualizowana pomyślnie");
-      });
+      },
+      err => this.handleError(err));
   }
 
   // -----------------------------------------------------------------------------------------
 
   public removeTodoList(todoListID: string): void {
+    this.err = null;
     this.homeService.removeTodoList(todoListID)
-      .then(res => {
-        if(res) {
-          const todoList = this.user.todoLists.find(tl => tl.id == todoListID);
-          this.user.todoLists.splice(this.user.todoLists.indexOf(todoList), 1);
-          this.alert.setAlertType(AlertType.SUCCESS).show(res.content);
-        }
-      });
+      .subscribe(res => {
+        const todoList = this.user.todoLists.find(tl => tl.id == todoListID);
+        this.user.todoLists.splice(this.user.todoLists.indexOf(todoList), 1);
+        this.alert.setAlertType(AlertType.SUCCESS).show(res.state);
+      },
+      err => this.handleError(err));
   }
 
+
+  private handleError(err: any) {
+    this.alert.setAlertType(AlertType.WARMING).show(err.message);
+  }
 }

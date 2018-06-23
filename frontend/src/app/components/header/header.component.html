@@ -1,13 +1,21 @@
 <div class="header">
   <div class="container">
     <a [routerLink]="['/home']" class="header__brand">TODO List</a>
-    <button class="header__menu__opener">
+    <button class="header__menu__opener"
+            [ngClass]="{
+              'header__menu__opener--opened': menuOpened
+            }"
+            (click)="openMenu()">
       <span></span>
       <span></span>
       <span></span>
     </button>
   
-    <div class="header__menu">
+    <div class="header__menu" 
+         [ngClass]="{
+           'header__menu--opened': menuOpened
+         }" 
+         #menu>
       <div class="header__menu__item">
         <div class="fa fa-fw fa-user"></div>
         <span>{{username}}</span>

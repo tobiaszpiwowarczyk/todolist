@@ -2,11 +2,12 @@
      [ngClass]="
      {
       'dropdown--opened': opened,
-      'dropdown--fluid': fluid
+      'dropdown--fluid': fluid,
+      'dropdown--no-border': noBorder
      }">
 
   <div class="dropdown__label" (click)="toggle()">
-    <div class="dropdown__value">{{valueLabel?.label}}</div>
+    <div class="dropdown__value">{{value?.label}}</div>
     <div class="dropdown__caret">
       <div *ngIf="!opened" class="fa fa-angle-down"></div>
       <div *ngIf="opened" class="fa fa-angle-up"></div>

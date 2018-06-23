@@ -1,4 +1,5 @@
-import {DropdownValue} from "../dropdown/dropdown.component";
+import {DropdownValue} from "../dropdown/DropdownValue";
+
 export class Todo {
   id: string;
   content: string;

@@ -3,21 +3,32 @@ package pl.toby.user;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import pl.toby.core.misc.BaseEntity;
+import pl.toby.misc.BaseEntity;
 import pl.toby.todolist.TodoList;
 import pl.toby.user.role.UserRole;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
+@EqualsAndHashCode(callSuper = false)
+@Data
+@NoArgsConstructor
+@Builder
+@Table(name = "users")
 public class User extends BaseEntity implements UserDetails {
 
     public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
@@ -25,7 +36,6 @@ public class User extends BaseEntity implements UserDetails {
 
     @Column(unique = true)
     private String username;
-    @Size(min = 7)
     private String password;
 
     private String firstName;
@@ -36,33 +46,29 @@ public class User extends BaseEntity implements UserDetails {
             shape = JsonFormat.Shape.STRING,
             pattern = "yyyy-MMM-dd"
     )
-    private Date createdDate;
+    @Builder.Default
+    private Date createdDate = new Date();
 
-    @ElementCollection
-    private List<String> roles;
+    @Builder.Default
+    private UserRole role = UserRole.USER;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("user")
     @OrderBy("createdDate DESC")
-    private List<TodoList> todoLists;
+    @Builder.Default
+    private List<TodoList> todoLists = new ArrayList<>();
+    
 
-
-
-    public User() {
+    public User(String username, String password, String firstName, String lastName, String email,  Date createdDate, UserRole role, List<TodoList> todoLists) {
         super();
-        this.roles = new ArrayList<>();
-        this.todoLists = new ArrayList<>();
-    }
-
-    public User(String username, String password, String firstName, String lastName, String email, UserRole role, Date createdDate) {
-        this();
         this.username = username;
         this.setPassword(password);
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.createdDate = createdDate;
-        this.setRoles(role);
+        this.role = role;
+        this.todoLists = todoLists;
     }
 
 
@@ -97,82 +103,15 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+        return role.getRoles().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
     }
 
 
-
-
-
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
+    
     public void setPassword(String password) {
         this.password = PASSWORD_ENCODER.encode(password);
     }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public List<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(UserRole role) {
-        this.roles = Arrays.asList(role.getRoles());
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
-        this.createdDate = createdDate;
-    }
     
-    public boolean hasRole(UserRole role) {
-        return roles.containsAll(Collections.singletonList(role.getRoles()));
-    }
-
-    public List<TodoList> getTodoLists() {
-        return todoLists;
-    }
-
-
-
-
-
 
     @Override
     public String toString() {
@@ -181,6 +120,7 @@ public class User extends BaseEntity implements UserDetails {
                 ", password='" + password + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
+                ", role=" + role.getRoles() +
                 '}';
     }
 }

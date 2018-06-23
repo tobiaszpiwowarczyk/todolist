@@ -3,12 +3,15 @@ package pl.toby.todo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.toby.todo.Todo;
-import pl.toby.todo.TodoBuilder;
-import pl.toby.todo.TodoRepository;
+import pl.toby.todo.exception.TodoNotFoundException;
 import pl.toby.todo.prority.TodoPriority;
 import pl.toby.todo.prority.TodoPriorityConverter;
-import pl.toby.todolist.TodoListRepository;
+import pl.toby.todo.repository.TodoRepository;
+import pl.toby.todolist.exception.TodoListNotFoundException;
+import pl.toby.todolist.repository.TodoListRepository;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -28,6 +31,10 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public Todo findById(UUID id) {
+
+        if (!todoRepository.exists(id))
+            throw new TodoNotFoundException();
+
         return todoRepository.findOne(id);
     }
 
@@ -40,42 +47,45 @@ public class TodoServiceImpl implements TodoService {
 
     @Override
     public Todo addTodo(UUID todoListID, Todo todo) {
-        
-        todo = new TodoBuilder()
-                .content(todo.getContent())
-                .todoList(todoListRepository.findOne(todoListID))
-                .build();
-        
-        todoRepository.save(todo);
 
-        return todo;
+        if(!todoListRepository.exists(todoListID))
+            throw new TodoListNotFoundException();
+
+
+        return todoRepository.save(
+                Todo.builder()
+                        .content(todo.getContent())
+                        .todoList(todoListRepository.findOne(todoListID))
+                        .build()
+        );
     }
 
     // --------------------------------------------------------------------------------------------------------
 
     @Override
-    public Todo updateTodo(UUID todoListID, UUID todoID, Todo todo) {
-        
-        todo = new TodoBuilder(todo).build();
+    public Todo updateTodo(Todo todo) {
 
-        Todo todoFound = todoRepository.findOne(todoID);
-        todoFound = new TodoBuilder(todoFound)
-                .content(todo.getContent())
-                .completed(todo.isCompleted())
-                .priority(TodoPriorityConverter.convert(todo.getPriority().toString()))
-                .build();
+        if (!todoRepository.exists(todo.getId()))
+            throw new TodoNotFoundException();
 
-        todoRepository.save(todoFound);
+        Todo todoFound = todoRepository.findOne(todo.getId());
+        todoFound.setContent(todo.getContent());
+        todoFound.setCompleted(todo.isCompleted());
+        todoFound.setPriority(TodoPriorityConverter.convert(todo.getPriority().toString()));
 
-        return todoFound;
+        return todoRepository.save(todoFound);
     }
 
     // --------------------------------------------------------------------------------------------------------
 
     @Override
-    public String removeTodo(UUID todoID) {
+    public Map removeTodo(UUID todoID) {
+
+        if (!todoRepository.exists(todoID))
+            throw new TodoNotFoundException();
+
         todoRepository.delete(todoID);
 
-        return "Todo object has been removed successfully";
+        return Collections.singletonMap("state", "Zadanie zostało usunięte pomyślnie");
     }
 }

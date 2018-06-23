@@ -1,4 +1,4 @@
-package pl.toby.core.annotation;
+package pl.toby.annotation;
 
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.http.MediaType;
@@ -14,7 +14,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @RestController
 @RequestMapping(
-        value = {},
         consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
         produces = MediaType.APPLICATION_JSON_UTF8_VALUE
 )

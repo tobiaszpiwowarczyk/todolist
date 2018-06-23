@@ -1,7 +1,10 @@
 package pl.toby.user.exception;
 
-public class UserExistsException extends UserException {
-    public UserExistsException() {
-        super("Użytkownik o podanej nazwie użytkownika już istnieje");
-    }
-}
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(
+        code = HttpStatus.CONFLICT,
+        reason = "Użytkownik o podanej nazwie użytkownika już istnieje"
+)
+public class UserExistsException extends UserException {}

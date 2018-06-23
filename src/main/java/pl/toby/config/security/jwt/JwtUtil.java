@@ -1,4 +1,4 @@
-package pl.toby.core.security.jwt;
+package pl.toby.config.security.jwt;
 
 
 import io.jsonwebtoken.Claims;
@@ -20,7 +20,7 @@ public class JwtUtil {
     public static String createToken(User user) {
         return TOKEN_PREFIX + Jwts.builder()
                 .setSubject(user.getUsername())
-                .claim(ROLE_CLAIM, user.getRoles())
+                .claim(ROLE_CLAIM, user.getRole().getRoles())
                 .claim("firstName", user.getFirstName())
                 .claim("lastName", user.getLastName())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))

@@ -13,8 +13,14 @@
       <ng-content></ng-content>
     </div>
     <div class="modal__actions">
-      <app-button (click)="approve()" [fluid]="true">OK</app-button>
-      <app-button [primary]="false" [fluid]="true" (click)="deny()">Anuluj</app-button>
+      <app-button [fluid]="true" 
+                  [large]="true"
+                  (click)="approve()">OK</app-button>
+                  
+      <app-button [primary]="false" 
+                  [fluid]="true" 
+                  [large]="true" 
+                  (click)="deny()">Anuluj</app-button>
     </div>
   </div>
 

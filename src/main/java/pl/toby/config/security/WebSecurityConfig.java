@@ -1,4 +1,4 @@
-package pl.toby.core.security.config;
+package pl.toby.config.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
-import pl.toby.core.security.jwt.JwtFilter;
+import pl.toby.config.security.jwt.JwtFilter;
 import pl.toby.user.User;
 import pl.toby.user.service.CustomUserDetailsService;
 
@@ -33,19 +33,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         RequestMatcher apiMatchers = new NegatedRequestMatcher(new AntPathRequestMatcher("/api/**"));
 
         web.ignoring()
-                .antMatchers("/api/user/login", "/api/user/register")
+                .antMatchers("/api/user/login", "/api/user/register", "/api/user/all")
                 .requestMatchers(apiMatchers);
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+                .csrf().disable()
                 .authorizeRequests()
                 .anyRequest().authenticated()
-                .and()
-                .addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .csrf().disable();
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and().addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class);
 
     }
 

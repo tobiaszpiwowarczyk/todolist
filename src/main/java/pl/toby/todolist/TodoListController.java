@@ -3,25 +3,17 @@ package pl.toby.todolist;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import pl.toby.core.annotation.MController;
-import pl.toby.core.misc.BaseController;
-import pl.toby.core.misc.Response;
-import pl.toby.todolist.exception.TodoListExistsException;
-import pl.toby.todolist.exception.TodoListNotFoundException;
+import org.springframework.web.bind.annotation.*;
+import pl.toby.annotation.MController;
 import pl.toby.todolist.service.TodoListServiceImpl;
-import pl.toby.user.User;
-import pl.toby.user.exception.UserNotAllowedException;
 import pl.toby.user.service.UserService;
 
 import java.security.Principal;
+import java.util.Map;
 import java.util.UUID;
 
 @MController(path = "/api/todolist")
-public class TodoListController extends BaseController {
+public class TodoListController {
 
     private TodoListServiceImpl todoListService;
     private UserService userService;
@@ -35,83 +27,36 @@ public class TodoListController extends BaseController {
 
     // --------------------------------------------------------------------------------------------------------
 
-    @RequestMapping(
-            value = "{todoListID}",
-            method = RequestMethod.GET
-    )
-    public Response<TodoList> findById(@PathVariable UUID todoListID) {
-
-        if(todoListService.findById(todoListID) == null) {
-            throw new TodoListNotFoundException();
-        }
-
-        return new Response<>(HttpStatus.OK, todoListService.findById(todoListID));
+    @GetMapping("{todoListID}")
+    public TodoList findById(@PathVariable UUID todoListID) {
+        return todoListService.findById(todoListID);
     }
 
     // --------------------------------------------------------------------------------------------------------
 
-    @RequestMapping(
-            value = "add",
-            method = RequestMethod.POST
-    )
-    public Response<TodoList> addTodoList(
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public TodoList addTodoList(
             @AuthenticationPrincipal Principal principal,
             @RequestBody TodoList todoList) {
-
-        if(todoListService.exists(todoList)) {
-            throw new TodoListExistsException();
-        }
-
-        User user = userService.findByUsername(principal.getName());
-
-        return new Response<>(
-                HttpStatus.CREATED,
-                todoListService.addTodoList(todoList, user)
-        );
+        return todoListService.addTodoList(todoList, principal);
     }
 
     // --------------------------------------------------------------------------------------------------------
 
-    @RequestMapping(
-            value = "update",
-            method = RequestMethod.POST
-    )
-    public Response<TodoList> updateTodoList(
+    @PutMapping
+    public TodoList updateTodoList(
             @AuthenticationPrincipal Principal principal,
             @RequestBody TodoList todoList) {
-
-        if(!todoListService.exists(todoList))
-            throw new TodoListNotFoundException();
-        
-        if(!todoListService.findById(todoList.getId()).getUser().getUsername().equals(principal.getName()))
-            throw new UserNotAllowedException();
-        
-        return new Response<>(
-                HttpStatus.OK,
-                todoListService.updateTodoList(todoList)
-        );
+        return todoListService.updateTodoList(todoList, principal);
     }
 
     // --------------------------------------------------------------------------------------------------------
 
-    @RequestMapping(
-            value = "{todoListID}",
-            method = RequestMethod.DELETE
-    )
-    public Response<String> removeTodoList(
+    @DeleteMapping("{todoListID}")
+    public Map removeTodoList(
             @AuthenticationPrincipal Principal principal,
             @PathVariable UUID todoListID) {
-
-        if(!todoListService.findById(todoListID).getUser().getUsername().equals(principal.getName())) {
-            throw new UserNotAllowedException();
-        }
-
-        if(todoListService.findById(todoListID) == null)
-            throw new TodoListNotFoundException();
-        
-        return new Response<>(
-                HttpStatus.OK,
-                todoListService.removeTodoList(todoListID)
-        );
+        return todoListService.removeTodoList(todoListID, principal);
     }
 }

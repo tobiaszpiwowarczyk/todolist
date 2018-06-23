@@ -1,29 +1,25 @@
 package pl.toby.todo.prority;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonFormat.Shape;
+import lombok.Getter;
 
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
+@JsonFormat(shape = Shape.OBJECT)
 public enum TodoPriority {
 
     HIGH("Wysoki"),
     MEDIUM("Średni"),
     LOW("Niski");
 
+    @Getter
     private String value;
+
+    @Getter
     private String label;
 
     TodoPriority(String label) {
         this.value = this.toString();
         this.label = label;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public String getLabel() {
-        return label;
     }
 
 }

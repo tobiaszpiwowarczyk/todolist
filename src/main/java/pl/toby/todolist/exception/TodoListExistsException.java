@@ -1,8 +1,11 @@
 package pl.toby.todolist.exception;
 
 
-public class TodoListExistsException extends TodoListException {
-    public TodoListExistsException() {
-        super("Lista o podanej nazwie już istnieje");
-    }
-}
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(
+        code = HttpStatus.CONFLICT,
+        reason = "Lista o podanej nazwie już istnieje"
+)
+public class TodoListExistsException extends RuntimeException {}

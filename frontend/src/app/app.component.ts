@@ -1,7 +1,6 @@
-import { OnInit } from '@angular/core';
-import { Component } from '@angular/core';
-import { LoginService } from './services/login/login.service';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { LoginService } from './services/login/login.service';
 
 @Component({
   selector: 'app-root',
@@ -18,14 +17,10 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-
     if(!this._ls.isAuthenticated()) {
       if(window.location.pathname != "/register") {
         this.router.navigate(["/login"]);
       }
-    }
-    else {
-      this.router.navigate(["/home"]);
     }
   }
 }

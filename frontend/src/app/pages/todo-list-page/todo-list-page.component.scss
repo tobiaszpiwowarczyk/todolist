@@ -19,9 +19,9 @@ $control-expanded-width: 230px;
     border-radius: $control-width * 2;
     cursor: pointer;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    transition: box-shadow .2s $bezier,
-                border-radius .2s $bezier,
-                width .2s $bezier;
+    transition: box-shadow $animation-time $bezier,
+                border-radius $animation-time $bezier,
+                width $animation-time $bezier;
     overflow: hidden;
 
     @include element("prev") {

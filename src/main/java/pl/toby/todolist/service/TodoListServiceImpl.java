@@ -3,13 +3,15 @@ package pl.toby.todolist.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.toby.todolist.TodoList;
-import pl.toby.todolist.TodoListBuilder;
-import pl.toby.todolist.TodoListRepository;
-import pl.toby.user.User;
-import pl.toby.user.UserRepository;
+import pl.toby.todolist.exception.TodoListExistsException;
+import pl.toby.todolist.exception.TodoListNotFoundException;
+import pl.toby.todolist.repository.TodoListRepository;
+import pl.toby.user.exception.UserNotAllowedException;
+import pl.toby.user.repository.UserRepository;
 
-import java.util.Date;
-import java.util.List;
+import java.security.Principal;
+import java.util.Collections;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -23,61 +25,70 @@ public class TodoListServiceImpl implements TodoListService {
         this.todoListRepository = todoListRepository;
         this.userRepository = userRepository;
     }
-
-
-
-
-
-    // --------------------------------------------------------------------------------------------------------
-
-    private List<TodoList> findAll() {
-        return todoListRepository.findAll();
-    }
-
-    // --------------------------------------------------------------------------------------------------------
-
-
-    @Override
-    public boolean exists(TodoList todoList) {
-        return todoListRepository.findByTodoListName(todoList.getName()) != null ||
-                todoListRepository.findById(todoList.getId()) != null;
-    }
+    
 
     // --------------------------------------------------------------------------------------------------------
 
     @Override
     public TodoList findById(UUID id) {
+        
+        if(!todoListRepository.exists(id)) 
+            throw new TodoListNotFoundException();
+        
         return todoListRepository.findById(id);
     }
 
     // --------------------------------------------------------------------------------------------------------
 
     @Override
-    public TodoList addTodoList(TodoList todoList, User user) {
-        todoList = new TodoListBuilder().name(todoList.getName()).createdDate(new Date()).user(user).build();
-        todoListRepository.save(todoList);
-        return todoList;
+    public TodoList addTodoList(TodoList todoList, Principal principal) {
+        
+        if(todoListRepository.exists(todoList))
+            throw new TodoListExistsException();
+        
+        return todoListRepository.save(
+                TodoList.builder().name(todoList.getName()).user(
+                        userRepository.findByUsername(principal.getName())
+                ).build()
+        );
     }
 
     // --------------------------------------------------------------------------------------------------------
 
     @Override
-    public TodoList updateTodoList(TodoList todoList) {
+    public TodoList updateTodoList(TodoList todoList, Principal principal) {
+        
+        if (!todoListRepository.exists(todoList.getId()))
+            throw new TodoListNotFoundException();
+
+        if(todoListRepository.findByName(todoList.getName()) != null)
+            throw new TodoListExistsException();
+        
+        if (!todoListRepository.findById(todoList.getId()).getUser().getUsername().equals(principal.getName()))
+            throw new UserNotAllowedException();
+
+
         TodoList todoListFound = todoListRepository.findOne(todoList.getId());
         todoListFound.setName(todoList.getName());
-
-        todoListRepository.save(todoListFound);
-
-        return todoListFound;
+        
+        return todoListRepository.save(todoListFound);
     }
 
     // --------------------------------------------------------------------------------------------------------
 
     @Override
-    public String removeTodoList(UUID todoListID) {
+    public Map removeTodoList(UUID todoListID, Principal principal) {
+        
+        if (!todoListRepository.findById(todoListID).getUser().getUsername().equals(principal.getName()))
+            throw new UserNotAllowedException();
+        
+        if (!todoListRepository.exists(todoListID))
+            throw new TodoListNotFoundException();
+
+
         todoListRepository.delete(todoListID);
 
-        return "TodoList has been removed successfully";
+        return Collections.singletonMap("state", "Lista zadań została usunięta pomyślnie");
 
     }
 }

@@ -7,10 +7,7 @@ export class TodoList {
   name: string;
   createdDate: Date;
   user: User;
-  prev: TodoList;
-  next: TodoList;
-  todos?: Todo[];
-  todosSize?: number;
+  todos?: Todo[] = [];
   processing: boolean = false;
 
   constructor(values: Object = {}) {

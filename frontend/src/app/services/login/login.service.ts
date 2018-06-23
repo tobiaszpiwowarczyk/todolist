@@ -3,11 +3,15 @@ import {Http, Headers} from "@angular/http";
 import {Router} from "@angular/router";
 import "rxjs/add/operator/toPromise";
 import "rxjs/add/operator/map";
+import "rxjs/add/operator/catch";
+import { JwtHelperService } from '@auth0/angular-jwt';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class LoginService {
 
   private headers: Headers;
+  private tokenHelper: JwtHelperService = new JwtHelperService();
 
   public readonly ITEM_STRING: string = "Token";
 
@@ -31,15 +35,16 @@ export class LoginService {
         headers: this.headers
       })
       .map(res => res.json())
+      .catch(res => Observable.throw(res))
       .toPromise()
       .then(res => {
-        if(res.status == 200) {
-          localStorage.setItem(this.ITEM_STRING, res.content.token);
-          localStorage.setItem("fullName", res.content.userData.firstName + " " + res.content.userData.lastName);
-        }
+
+        const tokenDecoded =  this.tokenHelper.decodeToken(res.access_token);
+        localStorage.setItem(this.ITEM_STRING, res.access_token);
+        localStorage.setItem("fullName", tokenDecoded.firstName + " " + tokenDecoded.lastName);
+
         return res;
-      })
-      .catch(err => JSON.parse(err._body));
+      });
   }
 
   public register(userData: any): Promise<any> {

@@ -18,7 +18,6 @@ $dropdown-border-width: 2px;
   background: $white;
   color: $black;
   cursor: pointer;
-  font-size: 18px;
 
   @include element("label") {
     position: relative;
@@ -81,5 +80,11 @@ $dropdown-border-width: 2px;
 
   @include modifier("fluid") {
     width: 100%;
+  }
+
+  @include modifier("no-border") {
+    .dropdown__label {
+      border: none;
+    }
   }
 }

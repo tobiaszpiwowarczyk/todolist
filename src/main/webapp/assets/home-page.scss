@@ -2,12 +2,6 @@
 @import "variables";
 @import "mixins";
 
-// --------------------------------------------
-
-$form-height: 60px;
-
-// --------------------------------------------
-
 
 .content__container {
 
@@ -26,7 +20,6 @@ $form-height: 60px;
   @include element("form") {
     position: relative;
     width: 100%;
-    height: $form-height;
     margin-bottom: 30px;
 
     form {
@@ -37,14 +30,27 @@ $form-height: 60px;
 
       app-input {
         flex: 4;
-
-        /deep/ .input {
-          border-right: 0;
-        }
       }
       .button {
         flex: 1;
       }
+
+      @include mobile {
+        flex-direction: column;
+      }      
+    }
+  }
+
+  @include modifier("error") {
+    text-align: center;
+
+    h1 {
+      font-size: 60px !important;
+    }
+
+    a {
+      line-height: 21px;
+      color: $blue;
     }
   }
 

@@ -1,8 +1,10 @@
 package pl.toby.user.exception;
 
-public class UserNotAllowedException extends UserException {
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-    public UserNotAllowedException() {
-        super("Nie posiadasz wymaganych uprawnień do ykonania danego żądania");
-    }
-}
+@ResponseStatus(
+        code = HttpStatus.FORBIDDEN,
+        reason = "Nie posiadasz wymaganych uprawnień do wykonania danego żądania"
+)
+public class UserNotAllowedException extends UserException {}

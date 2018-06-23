@@ -4,6 +4,7 @@ package pl.toby.todo.service;
 import pl.toby.todo.Todo;
 import pl.toby.todo.prority.TodoPriority;
 
+import java.util.Map;
 import java.util.UUID;
 
 public interface TodoService {
@@ -12,6 +13,6 @@ public interface TodoService {
     TodoPriority[] getPriorities();
 
     Todo addTodo(UUID todoListID, Todo todo);
-    Todo updateTodo(UUID todoListID, UUID todoID, Todo todo);
-    String removeTodo(UUID todoID);
+    Todo updateTodo(Todo todo);
+    Map removeTodo(UUID todoID);
 }

@@ -1,4 +1,4 @@
-package pl.toby.core.security.jwt;
+package pl.toby.config.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -30,7 +30,7 @@ public class JwtFilter extends GenericFilterBean {
         String authHeader = request.getHeader(JwtUtil.AUTHORIZATION);
 
         if(authHeader == null || !authHeader.startsWith(JwtUtil.TOKEN_PREFIX))
-            ((HttpServletResponse) res).sendError(HttpServletResponse.SC_UNAUTHORIZED, "Musisz być zalogowany, by wykonać żądanie");
+            ((HttpServletResponse) res).sendError(HttpServletResponse.SC_NOT_FOUND);
         else {
             try {
                 String token = authHeader.substring(JwtUtil.TOKEN_PREFIX.length());

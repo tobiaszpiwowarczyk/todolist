@@ -35,7 +35,7 @@ $input-border-width: 2px;
     border: $input-border-width solid $grey;
     display: flex;
     align-items: stretch;
-    transition: .2s $bezier;
+    transition: $animation-time $bezier;
 
     .fa {
       position: relative;
@@ -61,7 +61,7 @@ $input-border-width: 2px;
     input {
       width: calc(100% - #{$input-height});
       @include placeholder {
-        color: $grey;
+        color: darken($grey, 20%);
       }
     }
   }

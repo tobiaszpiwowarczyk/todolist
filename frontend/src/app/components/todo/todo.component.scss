@@ -121,7 +121,7 @@ $todo-border-width: 2px;
   }
 
 
-  @include laptop {
+  @include tablet {
     flex-direction: column;
     height: $todo-height * 2;
 

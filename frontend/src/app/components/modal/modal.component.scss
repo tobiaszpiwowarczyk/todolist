@@ -28,7 +28,7 @@ $modal-header-height: 70px;
     margin: 70px auto;
     background: $white;
     transform: translateY(-200%);
-    transition: .4s $bezier;
+    transition: $animation-time*2 $bezier;
 
     @include mobile {
       width: 100%;

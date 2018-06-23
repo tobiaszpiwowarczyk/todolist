@@ -2,7 +2,10 @@ package pl.toby.todolist;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import pl.toby.core.misc.BaseEntity;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import pl.toby.misc.BaseEntity;
 import pl.toby.todo.Todo;
 import pl.toby.user.User;
 
@@ -11,14 +14,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@EqualsAndHashCode(callSuper = true)
+@Data
+@Builder
 @Entity
+@Table(name = "todolists")
 public class TodoList extends BaseEntity {
 
     @Column(unique = true)
     private String name;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MMM-dd")
-    private Date createdDate;
+    @Builder.Default
+    private Date createdDate = new Date();
 
 
     @ManyToOne
@@ -28,57 +36,21 @@ public class TodoList extends BaseEntity {
     @OneToMany(mappedBy = "todoList", cascade = CascadeType.ALL)
     @JsonIgnoreProperties("todoList")
     @OrderBy("priority, createdDate DESC")
-    private List<Todo> todos;
+    @Builder.Default
+    private List<Todo> todos = new ArrayList<>();
 
 
 
     public TodoList() {
         super();
-        this.todos = new ArrayList<>();
     }
 
-    public TodoList(String name) {
+    public TodoList(String name, Date createdDate, User user, List<Todo> todos) {
         this();
         this.name = name;
-    }
-
-
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Date getCreatedDate() {
-        return createdDate;
-    }
-
-    public void setCreatedDate(Date createdDate) {
         this.createdDate = createdDate;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
         this.user = user;
-    }
-
-    public List<Todo> getTodos() {
-        return todos;
-    }
-
-    @Override
-    public String toString() {
-        return "TodoList{" +
-                "name='" + name + '\'' +
-                ", createdDate=" + createdDate +
-                ", user=" + user +
-                ", todos=" + todos +
-                '}';
+        this.todos = todos;
     }
 }
+

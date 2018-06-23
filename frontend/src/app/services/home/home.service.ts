@@ -1,9 +1,12 @@
 import { Injectable } from '@angular/core';
-import {Http, Headers} from "@angular/http";
+import { Headers, Http } from "@angular/http";
+import { Observable } from 'rxjs/Observable';
+import "rxjs/add/operator/catch";
 import "rxjs/add/operator/map";
+import "rxjs/add/observable/throw";
 import "rxjs/add/operator/toPromise";
-import {User} from "../../pages/home/User";
-import {TodoList} from "../../components/todo-list/TodoList";
+import { TodoList } from "../../components/todo-list/TodoList";
+import { User } from '../../pages/home/User';
 
 @Injectable()
 export class HomeService {
@@ -18,81 +21,44 @@ export class HomeService {
     this.headers.append("Authorization", localStorage.getItem("Token"));
   }
 
-  public getUserData(): Promise<User> {
+  public getUserData(): Observable<User> {
     return this.http.get("/api/user/account", { headers: this.headers })
-      .map(res => res.json())
-      .toPromise()
-      .then(res => new User({
-          id: res.content.id,
-          firstName: res.content.firstName,
-          lastName: res.content.lastName,
-          age: res.content.age,
-          roles: res.content.roles,
-          todoLists: res.content.todoLists.map(tl => new TodoList({
-            id: tl.id,
-            name: tl.name,
-            createdDate: tl.createdDate,
-            todosSize: tl.todos.length
-          }))
-        })
-      );
+      .map(res => new User(res.json()))
+      .catch(err => Observable.throw(err.json() || "Server error"));
   }
 
 
-  public addTodoList(todoList: any): Promise<TodoList> {
+  public addTodoList(todoList: any): Observable<TodoList> {
     return this.http.post(
-      "/api/todolist/add",
+      "api/todolist",
       JSON.stringify(todoList),
       {
         headers: this.headers
       })
-      .map(res => res.json())
-      .toPromise()
-      .then(res => {
-        if(res.status == 201) {
-          let tl = res.content;
-          return new TodoList({
-            id: tl.id,
-            name: tl.name,
-            createdDate: tl.createdDate,
-            todosSize: 0
-          });
-        }
-        else if(res.status == 500) return res.content;
-      });
+      .map(res => new TodoList(res.json()))
+      .catch(err => Observable.throw(err.json()));
   }
 
 
-  public editTodoList(form: any): Promise<TodoList> {
-    return this.http.post(
-      `api/todolist/${form.todoListID}/update`,
-      JSON.stringify({name: form.name}),
+  public editTodoList(form: any): Observable<TodoList> {
+    return this.http.put(
+      `api/todolist`,
+      JSON.stringify(form),
       {
         headers: this.headers
       })
       .map(res => res.json())
-      .toPromise()
-      .then(res => {
-        console.log(res);
-        if(res.status == 200) {
-          return new TodoList({
-            id: res.content.id,
-            name: res.content.name,
-            createdDate: res.content.createdDate,
-            todosSize: res.content.todos.length
-          });
-        }
-      });
+      .catch(err => Observable.throw(err.json()));
   }
 
 
-  public removeTodoList(todoListID: string): Promise<any> {
+  public removeTodoList(todoListID: string): Observable<any> {
     return this.http.delete(
-      `/api/todolist/${todoListID}/remove`,
+      `/api/todolist/${todoListID}`,
       {
         headers: this.headers
       })
       .map(res => res.json())
-      .toPromise();
+      .catch(err => Observable.throw(err.json()));
   }
 }

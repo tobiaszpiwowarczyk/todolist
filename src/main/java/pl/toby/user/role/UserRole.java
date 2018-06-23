@@ -1,20 +1,21 @@
 package pl.toby.user.role;
 
 
+import lombok.Getter;
+
+import java.util.Arrays;
+import java.util.List;
+
 public enum UserRole {
 
-    LOCKED(new String[] {"ROLE_LOCKED"}),
-    USER(new String[] {"ROLE_USER"}),
-    ADMIN(new String[] {"ROLE_USER", "ROLE_ADMIN"});
+    LOCKED(Arrays.asList("ROLE_LOCKED")),
+    USER(Arrays.asList("ROLE_USER")),
+    ADMIN(Arrays.asList("ROLE_USER", "ROLE_ADMIN"));
 
 
-    private String[] roles;
+    @Getter private List<String> roles;
 
-    UserRole(String[] roles) {
+    UserRole(List<String> roles) {
         this.roles = roles;
-    }
-
-    public String[] getRoles() {
-        return roles;
     }
 }

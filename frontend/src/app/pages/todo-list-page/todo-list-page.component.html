@@ -1,20 +1,20 @@
 <app-header></app-header>
 
 
-<div *ngIf="status == 200">
+<div *ngIf="err == null">
 
   <div class="container content__container">
 
     <div class="todo-list-details">
-      <h2>{{content?.name}}</h2>
+      <h2>{{todoList?.name}}</h2>
       <div class="todo-list-details__data">
         <div class="todo-list-details__data__item">
           <div class="fa fa-fw fa-calendar-o"></div>
-          <span>{{content?.createdDate}}</span>
+          <span>{{todoList?.createdDate}}</span>
         </div>
         <div class="todo-list-details__data__item">
           <div class="fa fa-fw fa-list-ul"></div>
-          <span>{{content?.todos.length}}</span>
+          <span>{{todoList?.todos.length}}</span>
         </div>
       </div>
     </div>
@@ -22,15 +22,15 @@
     <div class="content__container__form">
       <form [formGroup]="addTodoForm" (ngSubmit)="addTodo()">
         <app-input formControlName="content"></app-input>
-        <app-button type="submit" [loading]="!valid" [disabled]="!valid" [large]="true">Dodaj</app-button>
+        <app-button type="submit" [loading]="!valid" [disabled]="!valid" [large]="true" [fluid]="true">Dodaj</app-button>
       </form>
     </div>
 
-    <h1 class="centered" *ngIf="content?.todos.length == 0">W tej chwili nie masz żadnych elementów</h1>
+    <h1 class="centered" *ngIf="todoList?.todos.length == 0">W tej chwili nie masz żadnych elementów</h1>
 
-    <div *ngIf="content?.todos.length > 0" class="content__container__list">
+    <div *ngIf="todoList?.todos.length > 0" class="content__container__list">
 
-      <todo *ngFor="let todo of content.todos"
+      <todo *ngFor="let todo of todoList?.todos"
             [todo]="todo"
             (onEdit)="openEditModal($event)"
             (onInfo)="info($event)"
@@ -59,22 +59,32 @@
         </tr>
       </table>
     </modal>
-    <modal title="Edytuj obiekt" (onApprove)="saveTodo()" #editModal>
+    <modal title="Edytuj obiekt" (onApprove)="editTodo()" #editModal>
       <form [formGroup]="editTodoForm">
-        <input type="hidden" formControlName="todoID" />
+        <input type="hidden" formControlName="id" [value]="editedTodo?.id" />
         <table>
           <tr>
             <td>Treść</td>
-            <td>
-              <app-input formControlName="content"></app-input>
+            <td class="compact">
+              <app-input formControlName="content" 
+                         [value]="editedTodo?.content" 
+                         [noBorder]="true"></app-input>
             </td>
           </tr>
           <tr>
             <td>Priorytet</td>
-            <td>
+            <td class="compact">
               <app-dropdown formControlName="priority"
                             [fluid]="true"
-                            [options]="priorities"></app-dropdown>
+                            [options]="priorities"
+                            [value]="editedTodo?.priority"
+                            [noBorder]="true"></app-dropdown>
+            </td>
+          </tr>
+          <tr>
+            <td>Czy zakończony?</td>
+            <td>
+              <app-switch formControlName="completed" [value]="editedTodo?.completed"></app-switch>
             </td>
           </tr>
         </table>
@@ -82,32 +92,32 @@
     </modal>
   </div>
 
-  <div class="controls">
-    <a class="control control__prev" *ngIf="content?.prev != null" [routerLink]="['/todoList', content?.prev?.id]">
+  <!-- <div class="controls">
+    <a class="control control__prev" *ngIf="todoList?.prev != null" [routerLink]="['/todoList', todoList?.prev?.id]">
       <div class="control__button">
         <div class="fa fa-angle-left"></div>
       </div>
       <div class="control__label">
-        <span>{{content?.prev?.name}}</span>
+        <span>{{todoList?.prev?.name}}</span>
       </div>
     </a>
-    <a class="control control__next" *ngIf="content?.next != null" [routerLink]="['/todoList', content?.next?.id]">
+    <a class="control control__next" *ngIf="todoList?.next != null" [routerLink]="['/todoList', todoList?.next?.id]">
       <div class="control__button">
         <div class="fa fa-angle-right"></div>
       </div>
       <div class="control__label">
-        <span>{{content?.next?.name}}</span>
+        <span>{{todoList?.next?.name}}</span>
       </div>
     </a>
-  </div>
+  </div> -->
 
   <app-alert #alert></app-alert>
 </div>
 
 
 
-<div *ngIf="status == 404" class="container content__container">
-  <h1>Błąd {{status}}</h1>
-  <p>{{content}}</p>
+<div *ngIf="err != null" class="container content__container content__container--error">
+  <h1>Błąd {{err.status}}</h1>
+  <p>{{err.message}}</p>
   <a [routerLink]="['/home']">Strona główna</a>
 </div>

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { LoginService } from '../../services/login/login.service';
 
 @Component({
@@ -10,6 +10,7 @@ import { LoginService } from '../../services/login/login.service';
 export class HeaderComponent implements OnInit {
 
   username: string;
+  menuOpened: boolean = false;
 
   constructor(
     private _ls: LoginService
@@ -21,5 +22,18 @@ export class HeaderComponent implements OnInit {
 
   logout() {
     this._ls.logout();
+  }
+
+  public openMenu(): void {
+    this.menuOpened = !this.menuOpened;
+  }
+
+  @HostListener("window:click", ['$event'])
+  public closeMenu(evt): void {
+    const className = evt.target.className.split(" ")[0];
+    if(className != "header__menu" && className != "header__menu__opener" && this.menuOpened) {
+      this.menuOpened = false;
+      console.log(this.menuOpened);
+    }
   }
 }

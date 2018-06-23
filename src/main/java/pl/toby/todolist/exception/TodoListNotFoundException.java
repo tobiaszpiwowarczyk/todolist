@@ -1,10 +1,11 @@
 package pl.toby.todolist.exception;
 
 
-public class TodoListNotFoundException extends TodoListException {
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-    public TodoListNotFoundException() {
-        super("Lista o podanym identyfikatorze nie istnieje");
-    }
-
-}
+@ResponseStatus(
+        code = HttpStatus.NOT_FOUND,
+        reason = "Lista o podanym identyfikatorze nie istnieje"
+)
+public class TodoListNotFoundException extends RuntimeException {}

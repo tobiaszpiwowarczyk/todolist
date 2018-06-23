@@ -1,0 +1,39 @@
+@import "../../../assets/variables";
+@import "../../../assets/mixins";
+
+// --------------------------------------------
+
+$switch-height: 20px;
+$switch-knob-padding: 3px;
+
+// --------------------------------------------
+
+.switch {
+  position: relative;
+  width: $switch-height * 2;
+  height: $switch-height;
+  background: $grey;
+  border-radius: $switch-height;
+  cursor: pointer;
+
+  &::after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: $switch-knob-padding;
+    left: $switch-knob-padding;
+    width: $switch-height - ($switch-knob-padding * 2);
+    height: $switch-height - ($switch-knob-padding * 2);
+    background: $white;
+    border-radius: $switch-height;
+    transition: $animation-time $bezier;
+  }
+
+  @include modifier("enabled") {
+    background: $green;
+
+    &::after {
+      left: $switch-height + $switch-knob-padding;
+    }
+  }
+}

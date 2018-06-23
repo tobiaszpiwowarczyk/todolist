@@ -18,6 +18,8 @@ import { DropdownComponent } from './components/dropdown/dropdown.component';
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { HeaderComponent } from './components/header/header.component';
 import { ButtonComponent } from './components/button/button.component';
+import { SwitchComponent } from './components/switch/switch.component';
+import { AutofocusDirective } from './directives/autofocus/autofocus.directive';
 
 @NgModule({
   declarations: [
@@ -34,7 +36,9 @@ import { ButtonComponent } from './components/button/button.component';
     InputComponent,
     DropdownComponent,
     HeaderComponent,
-    ButtonComponent
+    ButtonComponent,
+    SwitchComponent,
+    AutofocusDirective
   ],
   imports: [
     BrowserModule,

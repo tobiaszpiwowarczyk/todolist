@@ -21,7 +21,11 @@ $alert-z-index: 10;
   align-items: center;
   justify-content: center;
   z-index: 10;
-  transition: .2s $bezier;
+  transition: height $animation-time $bezier;
+  font: {
+    size: 18px;
+    weight: 900;
+  }
 
   .fa {
     position: absolute;
@@ -41,10 +45,6 @@ $alert-z-index: 10;
     width: calc(100% - #{$alert-height * 2});
     text-align: center;
     padding: 0 15px;
-    font: {
-      size: 18px;
-      weight: 900;
-    };
   }
 
   .fa-times {
@@ -87,6 +87,15 @@ $alert-z-index: 10;
       &:hover {
         color: darken($green, 45%);
       }
+    }
+  }
+
+
+  @include mobile {
+    font-size: 14px;
+
+    .fa {
+      font-size: $icon-font-size - 2;
     }
   }
 }

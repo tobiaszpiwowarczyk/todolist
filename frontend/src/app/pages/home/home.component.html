@@ -4,14 +4,14 @@
   <div class="content__container__form">
     <form [formGroup]="addTodoListForm" (ngSubmit)="addTodoList()">
       <app-input formControlName="name"></app-input>
-      <app-button type="submit" [loading]="!valid" [disabled]="!valid" [large]="true">Dodaj listę</app-button>
+      <app-button type="submit" [loading]="!valid" [disabled]="!valid" [large]="true" [fluid]="true">Dodaj listę</app-button>
     </form>
   </div>
 
 
 
 
-
+  <h1 *ngIf="err != null">{{err}}</h1>
 
 
 
@@ -36,7 +36,7 @@
         <tr>
           <td>Nazwa listy</td>
           <td class="compact">
-            <input type="hidden" formControlName="todoListID" />
+            <input type="hidden" formControlName="id" />
             <app-input [noBorder]="true" formControlName="name"></app-input>
           </td>
         </tr>

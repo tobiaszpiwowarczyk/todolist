@@ -2,16 +2,14 @@ package pl.toby.todolist.service;
 
 
 import pl.toby.todolist.TodoList;
-import pl.toby.user.User;
 
+import java.security.Principal;
+import java.util.Map;
 import java.util.UUID;
 
 public interface TodoListService {
-
-    boolean exists(TodoList todoList);
-
     TodoList findById(UUID id);
-    TodoList addTodoList(TodoList todoList, User user);
-    TodoList updateTodoList(TodoList todoList);
-    String removeTodoList(UUID todoListID);
+    TodoList addTodoList(TodoList todoList, Principal principal);
+    TodoList updateTodoList(TodoList todoList, Principal principal);
+    Map removeTodoList(UUID todoListID, Principal principal);
 }

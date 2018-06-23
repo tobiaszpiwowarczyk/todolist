@@ -1,10 +1,10 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {FormGroup, FormControl, Validators} from "@angular/forms";
-import {LoginService} from "../../services/login/login.service";
-import {AlertComponent} from "../../components/alert/alert.component";
-import {AlertType} from "../../components/alert/AlertType";
-import {InputValidator} from "../../components/input/input.validator";
-import {Router} from "@angular/router";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from "@angular/router";
+import { AlertType } from "../../components/alert/AlertType";
+import { AlertComponent } from "../../components/alert/alert.component";
+import { LoginService } from "../../services/login/login.service";
+import { InputComponent } from '../../components/input/input.component';
 
 @Component({
   selector: 'app-register',
@@ -17,6 +17,7 @@ import {Router} from "@angular/router";
 export class RegisterComponent implements OnInit {
 
   @ViewChild("alert") alert: AlertComponent;
+  @ViewChild("username") username: InputComponent
 
   registerForm: FormGroup;
 
@@ -27,16 +28,19 @@ export class RegisterComponent implements OnInit {
 
   constructor(
     private loginService: LoginService,
-    private router: Router
+    private router: Router,
+    private fb: FormBuilder
   ) {}
   ngOnInit() {
-    this.registerForm = new FormGroup({
-      username: new FormControl('', Validators.required),
-      password: new FormControl('', Validators.compose([Validators.required, Validators.minLength(7)])),
-      firstName: new FormControl('', Validators.required),
-      lastName: new FormControl('', Validators.required),
-      age: new FormControl('', Validators.compose([Validators.required, InputValidator.isNumber]))
+    this.registerForm = this.fb.group({
+      username: ['', Validators.required],
+      password: ['', Validators.compose([Validators.required, Validators.minLength(7)])],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', Validators.required]
     });
+
+    this.username.focus();
   }
 
   // -----------------------------------------------------------------------------------

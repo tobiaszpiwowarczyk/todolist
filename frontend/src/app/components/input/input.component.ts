@@ -1,5 +1,5 @@
-import {Component, OnInit, Input, forwardRef, ChangeDetectionStrategy} from "@angular/core";
-import {ControlValueAccessor, NG_VALUE_ACCESSOR} from "@angular/forms";
+import { ChangeDetectionStrategy, Component, Input, OnInit, forwardRef } from '@angular/core';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 import { InputErrors } from './InputErrors';
 
 
@@ -25,8 +25,8 @@ export class InputComponent implements OnInit, ControlValueAccessor {
   @Input() label: string = "";
   @Input() inputErrors: InputErrors = new InputErrors();
   @Input() noBorder: boolean = false;
+  @Input() value: string = "";
 
-  value: string = "";
   disabled: boolean = false;
   focused: boolean = false;
 

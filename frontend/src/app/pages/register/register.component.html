@@ -10,7 +10,7 @@
                  errors: registerForm.controls['username']?.errors,
                  submitted: submitted
                }"
-               label="Nazwa użytkownika..."></app-input>
+               label="Nazwa użytkownika..." #username></app-input>
 
       <app-input formControlName="password"
                 inputType="password"
@@ -39,13 +39,13 @@
                   }"
                 label="Nazwisko..."></app-input>
 
-      <app-input formControlName="age"
-                icon="calendar-o"
+      <app-input formControlName="email"
+                icon="envelope-o"
                 [inputErrors]="{
-                    errors: registerForm.controls['age']?.errors,
+                    errors: registerForm.controls['email']?.errors,
                     submitted: submitted
                   }"
-                label="Wiek..."></app-input>
+                label="Adres email..."></app-input>
     </div>
 
     <app-button type="submit" [fluid]="true">Zarejestruj się</app-button>
