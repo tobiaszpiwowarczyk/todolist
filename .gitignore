@@ -24,7 +24,7 @@ dist/
 nbdist/
 .nb-gradle/
 
-src/main/webapp
+src/main/webapp/
 .vscode
 bin/
 out/
